@@ -1,117 +1,279 @@
-# ⚡ PreLoved – Second-Hand Goods Marketplace
-> **Hyper-Local, Real-Time P2P Marketplace for Used Mobiles, Books, Furniture & More**  
-> *Built with Python 3, Django, Bootstrap 5, JavaScript, SQLite3 & Pillow.*
+# PreLoved - Modern Pre-Owned Classifieds Marketplace
+
+A full-stack, enterprise-grade peer-to-peer pre-owned classified ads platform built with Python, Django, Bootstrap, and Razorpay. PreLoved enables users to list, browse, search, and trade verified second-hand items—spanning Automobiles, Electronics, Furniture, Mobile Phones, and Industrial Machinery—with privacy-preserving callback leads and tiered monetization.
 
 ---
 
-## 🌟 Executive Overview & Key Features
+## Visual Showcase & Screenshots
 
-**PreLoved** is a modern, responsive, hyper-local consumer-to-consumer marketplace. It empowers community members to buy and sell pre-owned items transparently and quickly.
-
-### 🚀 Groundbreaking Feature: Real-Time Live Responsive Feed (X1 ➔ X2, X3)
-* **Instant Item Discovery:** When User **X1** publishes a new product listing, User **X2** and User **X3** browsing the catalog see the new product slide onto their screens **within 1 to 2 seconds** without needing to refresh or press F5.
-* **Non-intrusive Live Toast & Animation:** Smooth entrance micro-animations ensure the user's browsing position is never disrupted.
-* **Optimized Cursor Polling & WebSocket Architecture:** Efficient bandwidth consumption with sub-millisecond database queries.
+### 1. Modern Homepage & Hyper-Local Category Hub
+Search by keyword, filter across Indian states, and navigate structured categories.
+![PreLoved Homepage](docs/screenshots/homepage.png)
 
 ---
 
-## 📑 Day 1 Documentation Index
-
-All system specifications, algorithms, and designs are documented in detail:
-
-1. [**Complete Master Specification & Architecture**](docs/DOCUMENTATION.md)
-2. [**Database Entity-Relationship Diagram (ERD)**](docs/DOCUMENTATION.md#5-comprehensive-database-entity-relationship-diagram-erd)
-3. [**Live Feed & Negotiation Algorithms**](docs/DOCUMENTATION.md#3-core-algorithms--detailed-pseudocode)
-4. [**REST & Real-Time API Catalog**](docs/DOCUMENTATION.md#7-rest--real-time-api-endpoint-catalog)
-5. [**5-Day Implementation Roadmap**](docs/DOCUMENTATION.md#10-5-day-delivery-schedule--milestones-tracker)
+### 2. Classifieds Catalog & Smart Filtering
+Browse active listings with dynamic price displays, condition pills, and category tags.
+![Browse Classified Listings](docs/screenshots/browse_listings.png)
 
 ---
 
-## 🛠️ Technology Stack
-
-| Layer | Technology |
-| :--- | :--- |
-| **Backend Framework** | Python 3.11+, Django 5.x |
-| **Database** | SQLite3 (Development / Zero-dependency) / PostgreSQL ready |
-| **Media & Image Processing**| Pillow (PIL) – Auto EXIF Stripping, WebP/JPEG Resizing & Compression |
-| **Frontend UI / UX** | HTML5, Modern CSS3, Bootstrap 5.3, Bootstrap Icons |
-| **Design Aesthetics** | Minimalist Glassmorphism inspired by **21st.dev** and **Awwwards** |
-| **Client Scripting** | Vanilla Modern JavaScript (ES6+), Fetch API, DOM Delta Engine |
+### 3. Listing Detail Page with "Request a Call" Lead System
+Structured technical specifications, seller profile verification, and direct callback routing.
+![Ad Detail Page](docs/screenshots/ad_detail.png)
 
 ---
 
-## 🧩 System Modules
-
-### 1. 🛡️ Admin Module
-* **Category Governance:** Add, edit, activate/deactivate item categories with custom icons.
-* **Listing Moderation:** Review flagged listings, approve or delete prohibited/fake goods.
-* **User Management & Sanctions:** Block fraudulent users, audit reports, view platform analytics.
-* **Live System Metrics:** Real-time counters for active listings, total offers, and reported items.
-
-### 2. 👤 User Module (Buyer & Seller)
-* **Authentication:** Secure registration, login, profile editing, and password management.
-* **Seller Studio:** Multi-image upload with client and server-side preview, price setting, condition selector (`Brand New`, `Like New`, `Good`, `Fair`), and location tags.
-* **Catalog Discovery:** Real-time search with live debouncing, category tabs, price range sliders, and city filtering.
-* **Live Feed Engine:** Real-time incoming listing cards with custom animations.
-* **Wishlist Engine:** Instant 1-click wishlist toggle with heart bounce animations.
-* **Negotiation & Offers:** Buyers propose custom prices; Sellers accept, reject, or mark item as SOLD.
-* **1-on-1 Chat:** Direct communication between buyer and seller linked to the specific item.
-* **Reporting System:** Community reporting for suspicious, fake, or prohibited items.
+### 4. Category-Specific Catalog Archive
+Tailored category views (such as Cars and Two-Wheelers) with deep filtering.
+![Cars Category Archive](docs/screenshots/category_cars.png)
 
 ---
 
-## 🔄 Core Algorithms at a Glance
+### 5. Multi-Step Listing Submission Studio
+Seller studio featuring category-specific dynamic fields, document checks, and multi-photo upload validation.
+![Post Ad Studio](docs/screenshots/post_ad.png)
+
+---
+
+### 6. Secure Authentication & Member Portal
+Streamlined login and registration interface protected against open redirects and brute-force vectors.
+![Authentication Portal](docs/screenshots/login_page.png)
+
+---
+
+## Core Features (A to Z)
+
+- **A - Automobile & Document Verification**: Built-in support for vehicle listings including Fuel Type, KM Driven, Transmission, Ownership count, Registration State, RC (Registration Certificate) availability, and Test Ride flags.
+- **B - Buyer Callback Lead Pipeline**: Replaces exposed phone numbers with an interactive **"Request a Call"** system. Captures buyer name, phone (+91 validation), preferred contact window (Morning, Afternoon, Evening, Anytime), and inquiry notes.
+- **C - Category Architecture**: Two-tier hierarchical taxonomy with subcategories, category slugs, and dedicated archive pages.
+- **D - Dynamic Specification Fields**: Dynamic JavaScript form generator that injects category-appropriate inputs (e.g. Engine/KM/RC for vehicles vs Screen/RAM/Storage for smartphones).
+- **E - Email Notification Engine**: Integrated with Gmail SMTP via Google App Passwords to deliver real-time email alerts to sellers whenever a buyer requests a callback.
+- **F - Featured Ad Monetization (Razorpay)**: Automated listing upgrades with 3 promotion plans:
+  - **7-Day Fast Boost** (₹99)
+  - **30-Day Premium Highlight** (₹249)
+  - **90-Day VIP Feature** (₹599)
+  - Features cryptographic HMAC-SHA256 signature verification and automatic expiration scheduling (`featured_until`).
+- **G - Governance, Safety & XSS Sanitization**:
+  - HTML body sanitization powered by `bleach` to prevent Stored Cross-Site Scripting (XSS).
+  - Open redirect defense via Django's `url_has_allowed_host_and_scheme`.
+  - Image MIME validation and 10MB size enforcement using Pillow header verification.
+- **H - High-Performance Admin & Analytics Hub**: Custom administrative control center (`/admin/analytics/`) featuring platform telemetry, inventory trajectory metrics, category breakdowns, and Excel/CSV data exports.
+- **I - Interactive Member Dashboard**: Control center for sellers to manage active, featured, and sold listings, track saved wishlists, and review leads.
+- **L - Lead Management Dashboard (`/call-requests/`)**: Dedicated seller dashboard with live pending lead counts, click-to-call shortcuts, direct WhatsApp integration, and one-click "Mark Contacted" status toggling.
+- **P - Photo Upload Engine**: Enforces a minimum of 3 and maximum of 10 photos per listing for quality assurance.
+- **S - State & City Filtering**: Deep geographical filtering covering major Indian states and metropolitan cities.
+- **W - Wishlist System**: Instant client-side AJAX wishlist bookmarking with count indicators.
+
+---
+
+## Technical Stack & Architecture
+
+- **Backend**: Python 3.11+, Django 5.x
+- **Database**: SQLite (Zero-dependency development) / PostgreSQL ready
+- **Payment Gateway**: Razorpay Payments API (Order Creation, Verification, Webhooks)
+- **Email Delivery**: Python `smtplib` via Google SMTP (`smtp.gmail.com:587` with TLS)
+- **Frontend**: HTML5, Modern CSS, Bootstrap, JavaScript (ES6+), LineIcons
+- **Security & Utilities**: `bleach` (HTML sanitization), `pillow` (image verification), `django-ckeditor`
+
+---
+
+## Database Schema (Entity-Relationship Diagram)
 
 ```mermaid
-flowchart LR
-    A["Seller (X1) Posts Listing"] --> B["Pillow Pipeline (Sanitize + WebP)"]
-    B --> C["DB Save (Status: ACTIVE)"]
-    C --> D["Cursor Event Registered"]
-    D --> E["Buyers (X2, X3) Background Poll (2s)"]
-    E --> F["Smooth Slide-in Card Animation"]
+erDiagram
+    User ||--o| Author : "has profile"
+    User ||--o{ Ads : "owns"
+    User ||--o{ Wishlist : "saves"
+    User ||--o{ CallRequest : "sends/receives"
+    User ||--o{ Payment : "makes"
+
+    Category ||--o{ Category : "has subcategories"
+    Category ||--o{ Ads : "classifies"
+
+    State ||--o{ City : "contains"
+    State ||--o{ Ads : "locates"
+    City ||--o{ Ads : "locates"
+
+    Ads ||--o{ AdsImages : "contains photos"
+    Ads ||--o{ Wishlist : "bookmarked in"
+    Ads ||--o{ CallRequest : "receives inquiries"
+    Ads ||--o{ Payment : "promoted by"
+
+    Plan ||--o{ Payment : "defines tier"
+
+    Ads {
+        int id PK
+        string title
+        decimal price
+        string condition
+        string seller_type
+        boolean is_featured
+        datetime featured_until
+        boolean is_active
+        boolean is_sold
+    }
+
+    CallRequest {
+        int id PK
+        string buyer_name
+        string buyer_phone
+        string preferred_time
+        text message
+        boolean is_contacted
+        datetime created_at
+    }
+
+    Payment {
+        int id PK
+        string razorpay_order_id
+        string razorpay_payment_id
+        string status
+        int amount_paise
+        datetime paid_at
+    }
 ```
 
 ---
 
-## 📅 5-Day Delivery Schedule
+## Repository Directory Structure
 
-| Day | Focus Area | Status |
-| :---: | :--- | :---: |
-| **Day 1** | **System Documentation (SRS, ERD, Algorithms, API Specs, UI Architecture)** | ✅ **Completed** |
-| **Day 2** | **Project Setup, Custom User Model, Category/Listing Models, Pillow Pipeline, Admin Engine** | ⏳ Scheduled |
-| **Day 3** | **Seller Listing Studio, Dynamic Filters, Catalog Search & Wishlist Engine** | ⏳ Scheduled |
-| **Day 4** | **Live Responsive Feed (1–2s updates), Real-Time Chat & Price Offer State Machine** | ⏳ Scheduled |
-| **Day 5** | **21st.dev/Awwwards UI Polish, E2E Testing, Final Verification & Remote Push** | ⏳ Scheduled |
+```text
+PreLoved-Django-P1/
+├── ads/                        # Core Classifieds Application
+│   ├── migrations/             # Database migrations (including 0036_callrequest)
+│   ├── templates/ads/          # Templates (ads-detail, ads-listing, post-ads, wishlist)
+│   ├── admin.py                # Admin declarations for Ads & CallRequests
+│   ├── models.py               # Ads, Category, CallRequest, State, City models
+│   ├── urls.py                 # Ad routing & request-call endpoint
+│   └── views.py                # Ad posting, sanitized editing, detail, and search
+├── authentication/             # User Authentication & Security
+│   ├── forms.py                # Case-insensitive registration & profile forms
+│   ├── urls.py                 # Login, signup, password reset routes
+│   └── views.py                # Open-redirect safe authentication logic
+├── custom_admin/               # Administrative Analytics & Telemetry
+│   ├── templates/custom_admin/ # Custom analytics, telemetry, and moderation UI
+│   ├── services.py             # Telemetry aggregations & reporting
+│   └── views.py                # Export functions & management views
+├── pages/                      # Static & Home Pages
+│   ├── templates/pages/        # Index, FAQ, Contact, Terms
+│   └── views.py                # Home page with category listing
+├── payments/                   # Razorpay Monetization System
+│   ├── templates/payments/     # Promotion checkout interface
+│   ├── models.py               # Plan & Payment models
+│   ├── urls.py                 # Payment endpoints (create order, verify, webhook)
+│   └── views.py                # HMAC-SHA256 signature verification & sandbox fallback
+├── profiles/                   # User Profile & Dashboard
+│   ├── templates/profiles/     # Account dashboard, all-ads, call-requests, settings
+│   ├── urls.py                 # Profile & lead management routes
+│   └── views.py                # Dashboard metrics & lead status toggling
+├── preloved/                   # Django Project Core Configuration
+│   ├── settings.py             # Settings, .env loading, SMTP configuration
+│   ├── urls.py                 # Master URL registry
+│   └── wsgi.py                 # WSGI application entrypoint
+├── docs/                       # Project Documentation & Assets
+│   ├── DOCUMENTATION.md        # Technical specification & system architecture
+│   └── screenshots/            # UI screenshots gallery
+├── static/                     # Static CSS, JS, Vendor Icons, and SCSS
+├── .env.example                # Sample environment variables template
+├── .gitignore                  # Production Git ignore rules
+├── manage.py                   # Django CLI management script
+└── requirements.txt            # Python dependencies manifest
+```
 
 ---
 
-## 💻 Local Quickstart
+## Installation & Local Setup
 
-### Prerequisites
-* Python 3.10+
-* Git
-
-### Installation
+### 1. Clone the Repository
 ```bash
-# 1. Clone repository
 git clone https://github.com/samir00777/Pre-Loved.git
 cd Pre-Loved
+```
 
-# 2. Create virtual environment
+### 2. Create and Activate Virtual Environment
+```bash
+# On Windows:
 python -m venv venv
-venv\Scripts\activate   # On Windows
-source venv/bin/activate # On macOS/Linux
+.\venv\Scripts\activate
 
-# 3. Install dependencies
+# On macOS/Linux:
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install Required Dependencies
+```bash
 pip install -r requirements.txt
+```
 
-# 4. Copy environment configuration
-copy .env.example .env   # On Windows (or cp .env.example .env on Linux/macOS)
+### 4. Configure Environment Variables
+Copy the `.env.example` file to `.env`:
+```bash
+# On Windows:
+copy .env.example .env
 
-# 5. Apply migrations
+# On macOS/Linux:
+cp .env.example .env
+```
+
+Open `.env` and configure your credentials:
+```env
+SECRET_KEY=your-django-secret-key
+DEBUG=True
+
+# Gmail SMTP Email Setup (for Call Request Notifications)
+EMAIL_HOST_USER=your_email@gmail.com
+EMAIL_HOST_PASSWORD=your_16_character_app_password
+DEFAULT_FROM_EMAIL=PreLoved <your_email@gmail.com>
+
+# Razorpay API Credentials (Optional - sandbox mode available by default)
+RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+RAZORPAY_WEBHOOK_SECRET=your_webhook_secret
+```
+
+### 5. Apply Database Migrations
+```bash
 python manage.py migrate
+```
 
-# 6. Start development server
+### 6. Create an Administrative Superuser
+```bash
+python manage.py createsuperuser
+```
+
+### 7. Launch Development Server
+```bash
 python manage.py runserver
 ```
-Visit `http://127.0.0.1:8000` to access the application.
+
+Open your web browser and navigate to:
+```text
+http://127.0.0.1:8000/
+```
+
+- Access the public marketplace: `http://127.0.0.1:8000/`
+- Access your member dashboard: `http://127.0.0.1:8000/dashboard/`
+- Access buyer callback leads: `http://127.0.0.1:8000/call-requests/`
+- Access the custom admin analytics: `http://127.0.0.1:8000/admin/analytics/`
+
+---
+
+## Security Hardening Details
+
+1. **Stored XSS Sanitization**:
+   - All user-submitted listing descriptions are cleaned through `bleach.clean()` before persistence, allowing safe HTML tags while stripping `<script>`, `onerror`, `onload`, and malicious `javascript:` schemes.
+2. **Open Redirect Defense**:
+   - `login_view` and `signup_view` inspect the `?next=` query parameter via `url_has_allowed_host_and_scheme()` to prevent external phishing redirects.
+3. **MIME & File Integrity Validation**:
+   - Uploaded ad images are validated for size (under 10MB), extension allowlist (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`), and structural validity via Pillow image header inspection.
+4. **Secret Isolation**:
+   - Real credentials, API keys, and email app passwords are fully isolated inside `.env` and kept strictly untracked by Git.
+
+---
+
+## License & Author
+
+Developed by **Samir Karavadara** for the **PreLoved** marketplace project.  
+Licensed under the [MIT License](LICENSE).
