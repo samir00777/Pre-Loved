@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<!-- PreLoved Modern Hero Header -->
+<div class="pl-dashboard-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="pl-dashboard-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Preferences &amp; Security</span>
+        </div>
+        <h1 class="pl-dashboard-hero-title">Account Settings</h1>
+        <p class="pl-dashboard-hero-sub">Update your personal profile details, contact preferences, and public avatar.</p>
+      </div>
+      <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
+        <a href="{% url 'dashboard' %}" class="pl-hero-post-btn" style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.25);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="pl-dashboard-content">
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar Column -->
+      {% include 'profiles/account-sidebar.html' %}
+
+      <!-- Main Column -->
+      <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="pl-dashboard-main">
+
+          <!-- Settings Form Card -->
+          <div class="pl-table-card">
+            <div class="pl-table-card-header">
+              <div class="pl-card-title-group">
+                <h2 class="pl-card-title">Update Your Profile</h2>
+                <span class="pl-card-badge">Personal Details</span>
+              </div>
+            </div>
+
+            <div style="padding: 28px 24px;">
+              {% if messages %}
+              <div style="margin-bottom: 20px;">
+                {% for message in messages %}
+                <div class="pl-alert-success" style="padding: 12px 16px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; color: #065f46; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <form method="POST" action="" class="pl-settings-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="pl-form-body">
+                  <div class="pl-form-section-title">Account Information</div>
+                  <div class="pl-form-grid">
+                    {% for field in user_form %}
+                    <div class="pl-form-group">
+                      <label class="pl-form-label">{{ field.label }}</label>
+                      {{ field }}
+                      {% if field.errors %}
+                        <div class="pl-form-error">{{ field.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    {% endfor %}
+                  </div>
+
+                  <div class="pl-form-section-title" style="margin-top: 24px;">Profile Photo</div>
+                  <div class="pl-form-grid">
+                    {% for field in profile_form %}
+                    <div class="pl-form-group" style="grid-column: 1 / -1;">
+                      <label class="pl-form-label">{{ field.label }}</label>
+                      {{ field }}
+                      {% if field.errors %}
+                        <div class="pl-form-error">{{ field.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    {% endfor %}
+                  </div>
+
+                  <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="pl-hero-post-btn" style="border: none; cursor: pointer;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span>Save Changes</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <!-- End Settings Card -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* PreLoved Modern Dashboard & Settings Styles */
+  .pl-dashboard-hero {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+    padding: 120px 0 45px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .pl-dashboard-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c7d2fe;
+    margin-bottom: 10px;
+  }
+  .pl-dashboard-hero-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .pl-dashboard-hero-sub {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0;
+    max-width: 620px;
+  }
+  .pl-hero-post-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #4f46e5;
+    color: #ffffff !important;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 11px 22px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+    transition: all 0.2s ease;
+  }
+  .pl-hero-post-btn:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+  }
+
+  /* Main Container */
+  .pl-dashboard-content {
+    padding-bottom: 60px;
+  }
+  .pl-dashboard-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Table Card */
+  .pl-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
+  .pl-table-card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .pl-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pl-card-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .pl-card-badge {
+    padding: 3px 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  /* Form Styling */
+  .pl-form-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    margin-bottom: 14px;
+  }
+  .pl-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 767px) {
+    .pl-form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .pl-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pl-form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin: 0;
+  }
+  .pl-form-group input[type="text"],
+  .pl-form-group input[type="email"],
+  .pl-form-group input[type="password"],
+  .pl-form-group input[type="file"],
+  .pl-form-group select,
+  .pl-form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #0f172a;
+    background: #ffffff;
+    transition: all 0.15s ease;
+    outline: none;
+  }
+  .pl-form-group input:focus,
+  .pl-form-group select:focus,
+  .pl-form-group textarea:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  }
+  .pl-form-error {
+    font-size: 12px;
+    color: #dc2626;
+    font-weight: 600;
+  }
+</style>
+{% endblock content %}

@@ -1,0 +1,821 @@
+{% extends "base.html" %}
+{% load static %}
+{% load embed_video_tags %}
+{% block content %}
+
+<!-- Custom Styles for Partitioned Ad Detail Page -->
+<style>
+  .ad-detail-header-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  }
+  .ad-price-display {
+    font-size: 32px;
+    font-weight: 800;
+    color: #4f46e5;
+    line-height: 1.1;
+  }
+  .partition-detail-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 24px;
+    margin-top: 22px;
+    box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  }
+  .partition-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+  }
+  .partition-detail-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .spec-grid-item {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    transition: background 0.15s ease;
+  }
+  .spec-grid-item:hover {
+    background: #f1f5f9;
+  }
+  .spec-grid-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .spec-grid-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    word-break: break-word;
+  }
+  .feature-pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef2ff;
+    color: #4338ca;
+    border: 1px solid #c7d2fe;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    margin: 4px;
+  }
+  .seller-contact-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 24px;
+    box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  }
+  .action-call-btn {
+    background: #4f46e5;
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none !important;
+  }
+  .action-call-btn:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+  }
+  .action-whatsapp-btn {
+    background: #25D366;
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none !important;
+  }
+  .action-whatsapp-btn:hover {
+    background: #1ea952;
+    transform: translateY(-1px);
+  }
+
+  /* Badges */
+  .badge-rc-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .badge-seller-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .badge-test-ride {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .badge-condition-pill {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+  }
+  .badge-negotiable {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .badge-fixed {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+  }
+</style>
+
+<!-- Page Header Start -->
+<div class="page-header" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); padding: 30px 0;">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+          <span class="badge badge-primary px-3 py-1" style="background: #4f46e5; font-size: 12px; border-radius: 20px;">
+            {{ ads_detail.category }}
+          </span>
+
+          {% if ads_detail.seller_type %}
+            <span class="badge-seller-type"><i class="lni-user mr-1"></i>{{ ads_detail.seller_type }}</span>
+          {% endif %}
+
+          {% if ads_detail.is_rc_verified %}
+            <span class="badge-rc-verified"><i class="lni-shield mr-1"></i>RC Verified</span>
+          {% endif %}
+
+          {% if ads_detail.test_ride_available %}
+            <span class="badge-test-ride"><i class="lni-road mr-1"></i>Test Ride Welcome</span>
+          {% endif %}
+        </div>
+
+        <h1 style="color: #ffffff; font-weight: 800; font-size: 26px; margin: 0;">{{ ads_detail.title }}</h1>
+        <p style="color: #cbd5e1; font-size: 13px; margin: 6px 0 0 0;">
+          <i class="lni-map-marker"></i> {% if ads_detail.area %}{{ ads_detail.area }}, {% endif %}{{ ads_detail.city }}, {{ ads_detail.state }} &nbsp;|&nbsp;
+          <i class="lni-alarm-clock"></i> Posted: {{ ads_detail.date_created|date:"d M Y" }}
+        </p>
+      </div>
+
+      <div class="col-md-4 text-md-right mt-3 mt-md-0">
+        <div class="ad-price-display" style="color: #facc15;">
+          ₹{{ ads_detail.price }}
+        </div>
+        <div class="mt-1">
+          {% if ads_detail.is_negotiable %}
+            <span class="badge-negotiable"><i class="lni-check-mark mr-1"></i>Price Negotiable</span>
+          {% else %}
+            <span class="badge-fixed">Fixed Price</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Ads Details Start -->
+<div class="section-padding" style="background-color: #f8fafc; padding: 40px 0;">
+  <div class="container">
+    <div class="row">
+
+      <!-- LEFT COLUMN: PHOTOS & PARTITIONS -->
+      <div class="col-lg-8 col-md-12 col-xs-12">
+
+        {% if ads_detail.is_sold_out and not request.user.is_staff and ads_detail.author.user != request.user %}
+        <div style="background: #fff1f2; border: 2px solid #fecdd3; border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="background: #ef4444; color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+              <i class="lni-warning"></i>
+            </div>
+            <div>
+              <h4 style="margin: 0; color: #9f1239; font-weight: 700; font-size: 16px;">This Item is Sold Out</h4>
+              <p style="margin: 4px 0 0 0; color: #be123c; font-size: 13px;">This listing has been sold or is no longer active. Do you want to see similar products?</p>
+            </div>
+          </div>
+          <a href="{% url 'ads-search' %}?category_name={{ ads_detail.category.category_name }}" class="btn" style="background: #f59e0b; color: #0f172a; font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 8px; text-decoration: none;">
+            <i class="lni-search mr-1"></i> See Similar Products
+          </a>
+        </div>
+        {% elif not ads_detail.is_active %}
+        <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="background: #ef4444; color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+              <i class="lni-warning"></i>
+            </div>
+            <div>
+              <h4 style="margin: 0; color: #991b1b; font-weight: 700; font-size: 16px;">This Ad is Currently DEACTIVATED</h4>
+              <p style="margin: 4px 0 0 0; color: #b91c1c; font-size: 13px;">Hidden from public search, category archives, city/state pages, and homepage. Visible only to Admin & Seller.</p>
+            </div>
+          </div>
+          {% if request.user.is_staff %}
+          <a href="/admin/ads/{{ ads_detail.id }}/toggle-active/" class="btn" style="background: #10b981; color: white; font-weight: 700; font-size: 13px; padding: 8px 18px; border-radius: 8px; text-decoration: none;">
+            <i class="lni-play mr-1"></i> Activate Now
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Photo Gallery Carousel -->
+        <div class="ad-detail-header-card p-2 text-center overflow-hidden">
+          {% if ads_photos.count > 1 %}
+          <div id="adCarousel" class="carousel slide carousel-fade" data-ride="carousel">
+            <ol class="carousel-indicators">
+              {% for p in ads_photos %}
+              <li data-target="#adCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+              {% endfor %}
+            </ol>
+            <div class="carousel-inner" style="border-radius: 10px; max-height: 480px; background: #0f172a;">
+              {% for p in ads_photos %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img class="d-block w-100" src="{{ p.image.url }}" alt="{{ ads_detail.title }}" style="max-height: 480px; object-fit: contain; margin: 0 auto;">
+              </div>
+              {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#adCarousel" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#adCarousel" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+          {% elif ads_photos.count == 1 %}
+            {% for p in ads_photos %}
+            <img class="img-fluid rounded" src="{{ p.image.url }}" alt="{{ ads_detail.title }}" style="max-height: 480px; width: 100%; object-fit: contain;">
+            {% endfor %}
+          {% else %}
+            <div class="p-5 text-muted">
+              <i class="lni-image" style="font-size: 48px;"></i>
+              <p class="mt-2">No photos uploaded for this ad</p>
+            </div>
+          {% endif %}
+
+          {% if ads_detail.video %}
+          <div class="mt-3 text-center">
+            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#videoModal" style="border-radius: 8px; font-weight: 600;">
+              <i class="lni-video mr-1"></i> Watch Video Demo of Running Engine
+            </button>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- PARTITION 1: SPECIFICATIONS -->
+        {% if partition_specs %}
+        <div class="partition-detail-card">
+          <div class="partition-detail-header">
+            <h3 class="partition-detail-title">
+              <i class="lni-cog text-primary"></i> 1. Product Specifications
+            </h3>
+            <span class="badge badge-light px-2 py-1 font-weight-bold" style="color: #4f46e5; background: #eef2ff;">
+              {{ ads_detail.category }}
+            </span>
+          </div>
+
+          <div class="row">
+            {% for key, value in partition_specs.items %}
+            <div class="col-md-4 col-sm-6">
+              <div class="spec-grid-item">
+                <div class="spec-grid-label">{{ key }}</div>
+                <div class="spec-grid-value">{{ value }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- PARTITION 2: CONDITION & HEALTH REPORT -->
+        {% if partition_condition %}
+        <div class="partition-detail-card">
+          <div class="partition-detail-header">
+            <h3 class="partition-detail-title">
+              <i class="lni-shield text-success"></i> 2. Condition & Health Report
+            </h3>
+            <span class="badge-condition-pill">{{ ads_detail.condition }}</span>
+          </div>
+
+          <div class="row">
+            {% for key, value in partition_condition.items %}
+            <div class="col-md-4 col-sm-6">
+              <div class="spec-grid-item">
+                <div class="spec-grid-label">{{ key }}</div>
+                <div class="spec-grid-value">{{ value }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- PARTITION 3: DOCUMENTS, APPROVALS & WARRANTY -->
+        {% if partition_documents or ads_detail.bill_or_warranty or ads_detail.state %}
+        <div class="partition-detail-card">
+          <div class="partition-detail-header">
+            <h3 class="partition-detail-title">
+              <i class="lni-files text-warning"></i> 3. Documents, Approvals & Warranty
+            </h3>
+            {% if ads_detail.is_rc_verified %}
+              <span class="badge-rc-verified"><i class="lni-shield mr-1"></i>RC Document Verified</span>
+            {% endif %}
+          </div>
+
+          <div class="row">
+            {% if ads_detail.state %}
+            <div class="col-md-4 col-sm-6">
+              <div class="spec-grid-item">
+                <div class="spec-grid-label">Registration / State</div>
+                <div class="spec-grid-value">{{ ads_detail.state }}</div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if ads_detail.bill_or_warranty %}
+            <div class="col-md-4 col-sm-6">
+              <div class="spec-grid-item">
+                <div class="spec-grid-label">Invoice / Warranty</div>
+                <div class="spec-grid-value">{{ ads_detail.bill_or_warranty }}</div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% for key, value in partition_documents.items %}
+            <div class="col-md-4 col-sm-6">
+              <div class="spec-grid-item">
+                <div class="spec-grid-label">{{ key }}</div>
+                <div class="spec-grid-value">{{ value }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- PARTITION 4: FEATURES & EXTRAS -->
+        {% if features_list %}
+        <div class="partition-detail-card">
+          <div class="partition-detail-header">
+            <h3 class="partition-detail-title">
+              <i class="lni-star text-primary"></i> 4. Features & Included Extras
+            </h3>
+            <span class="badge badge-light px-2 py-1 font-weight-bold" style="color: #4f46e5; background: #eef2ff;">
+              {{ features_list|length }} Highlights
+            </span>
+          </div>
+          <div class="d-flex flex-wrap" style="gap: 8px;">
+            {% for feat in features_list %}
+              <span class="feature-pill-badge">
+                <i class="lni-checkmark-circle text-primary"></i> {{ feat }}
+              </span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- PARTITION 5: DETAILED DESCRIPTION -->
+        <div class="partition-detail-card">
+          <div class="partition-detail-header">
+            <h3 class="partition-detail-title">
+              <i class="lni-text-align-left text-primary"></i> 5. Product Description & Seller Notes
+            </h3>
+          </div>
+          <div class="ads-description" style="font-size: 15px; line-height: 1.7; color: #334155; white-space: pre-line;">
+            {{ ads_detail.description|safe }}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: PRICE, SUMMARY, SELLER CONTACT -->
+      <div class="col-lg-4 col-md-12 col-xs-12 mt-4 mt-lg-0">
+
+        <!-- Price & Quick Info Box -->
+        <div class="seller-contact-card mb-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span style="font-size: 13px; color: #64748b; font-weight: 600;">EXPECTED PRICE</span>
+            <span class="badge-condition-pill">{{ ads_detail.condition }}</span>
+          </div>
+
+          <div class="ad-price-display mb-3">
+            ₹{{ ads_detail.price }}
+          </div>
+
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            {% if ads_detail.is_negotiable %}
+              <span class="badge-negotiable"><i class="lni-checkmark"></i> Negotiable</span>
+            {% else %}
+              <span class="badge-fixed">Fixed Price</span>
+            {% endif %}
+
+            {% if ads_detail.seller_type %}
+              <span class="badge-seller-type">{{ ads_detail.seller_type }}</span>
+            {% endif %}
+
+            {% if ads_detail.test_ride_available %}
+              <span class="badge-test-ride"><i class="lni-road"></i> Test Ride Available</span>
+            {% endif %}
+          </div>
+
+          <!-- Quick Summary List -->
+          <ul class="list-unstyled mb-0" style="font-size: 13px; color: #334155; border-top: 1px dashed #e2e8f0; padding-top: 14px;">
+            {% if ads_detail.brand %}
+            <li class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted"><i class="lni-tag mr-1"></i> Brand:</span>
+              <span class="font-weight-bold">{{ ads_detail.brand }}</span>
+            </li>
+            {% endif %}
+
+            <li class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted"><i class="lni-folder mr-1"></i> Category:</span>
+              <span class="font-weight-bold">{{ ads_detail.category }}</span>
+            </li>
+
+            <li class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted"><i class="lni-map-marker mr-1"></i> Location:</span>
+              <span class="font-weight-bold text-right">{% if ads_detail.area %}{{ ads_detail.area }}, {% endif %}{{ ads_detail.city }}</span>
+            </li>
+
+            {% if ads_detail.preferred_contact_time %}
+            <li class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted"><i class="lni-alarm-clock mr-1"></i> Contact Time:</span>
+              <span class="font-weight-bold">{{ ads_detail.preferred_contact_time }}</span>
+            </li>
+            {% endif %}
+
+            {% if ads_detail.exchange_accepted %}
+            <li class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted"><i class="lni-reload mr-1"></i> Exchange:</span>
+              <span class="font-weight-bold text-success">Open to Exchange</span>
+            </li>
+            {% endif %}
+
+            {% if ads_detail.preferred_contact_time %}
+            <li class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted"><i class="lni-alarm-clock mr-1"></i> Best Time:</span>
+              <span class="font-weight-bold">{{ ads_detail.preferred_contact_time }}</span>
+            </li>
+            {% endif %}
+
+            {% if ads_detail.delivery_available %}
+            <li class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted"><i class="lni-delivery mr-1"></i> Logistics:</span>
+              <span class="font-weight-bold">{{ ads_detail.delivery_available }}</span>
+            </li>
+            {% endif %}
+
+            {% if ads_detail.reason_for_selling %}
+            <li class="d-flex justify-content-between py-1">
+              <span class="text-muted"><i class="lni-help mr-1"></i> Reason:</span>
+              <span class="font-weight-bold">{{ ads_detail.reason_for_selling }}</span>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+
+        <!-- SELLER CONTACT CARD -->
+        <div class="seller-contact-card">
+          <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 14px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+            <i class="lni-user text-primary mr-1"></i> Seller Information
+          </h4>
+
+          <div class="d-flex align-items-center mb-3">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; margin-right: 12px;">
+              {{ ads_detail.seller_name|default:ads_detail.author.user.username|make_list|first|upper }}
+            </div>
+            <div>
+              <div style="font-size: 16px; font-weight: 700; color: #0f172a;">
+                {{ ads_detail.seller_name|default:ads_detail.author.user.username }}
+              </div>
+              <div class="d-flex align-items-center gap-1 mt-1">
+                <span class="badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">
+                  <i class="lni-shield"></i> OTP Verified
+                </span>
+                <span class="badge badge-light" style="font-size: 11px;">
+                  {{ ads_detail.seller_type|default:"Owner" }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-flex flex-column gap-2 mt-3">
+            {% if request.user.is_authenticated and request.user == ads_detail.author.user or request.user.is_superuser or request.user.is_staff %}
+            <!-- Owner Quick Edit Button -->
+            <a href="{% url 'ads-edit' pk=ads_detail.pk %}" class="btn btn-block py-2 mb-2 font-weight-bold" style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); color: #ffffff; border-radius: 8px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              <span>Edit Your Listing</span>
+            </a>
+            <!-- Promote / Boost Button -->
+            <a href="{% url 'payments-promote' ad_id=ads_detail.pk %}" class="btn btn-block py-2 mb-2 font-weight-bold" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; border-radius: 8px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>Promote &amp; Boost Listing</span>
+            </a>
+            {% endif %}
+
+            <!-- Save to Wishlist Button -->
+            <button type="button" class="btn btn-block py-2 mb-2 font-weight-bold pl-detail-wishlist-btn" onclick="toggleWishlist({{ ads_detail.id }}, this);" style="border-radius: 8px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid {% if ads_detail.id in user_wishlist_ids %}#ef4444{% else %}#e2e8f0{% endif %}; background: {% if ads_detail.id in user_wishlist_ids %}#fee2e2{% else %}#ffffff{% endif %}; color: {% if ads_detail.id in user_wishlist_ids %}#b91c1c{% else %}#334155{% endif %}; transition: all 0.2s;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="{% if ads_detail.id in user_wishlist_ids %}#ef4444{% else %}none{% endif %}" stroke="{% if ads_detail.id in user_wishlist_ids %}#ef4444{% else %}currentColor{% endif %}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              <span>{% if ads_detail.id in user_wishlist_ids %}Saved in Wishlist{% else %}Add to Wishlist{% endif %}</span>
+            </button>
+
+            <!-- Request a Call Button -->
+            <button type="button" class="btn btn-block py-2 mb-2 font-weight-bold" data-toggle="modal" data-target="#requestCallModal" id="requestCallTriggerBtn" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; border-radius: 8px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); border: none; cursor: pointer; transition: all 0.2s;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <span>{% if has_requested_call %}Call Requested (Send Again){% else %}Request a Call{% endif %}</span>
+            </button>
+
+            <a href="https://wa.me/91{{ ads_detail.phone|cut:' '|cut:'-' }}?text=Hi%20{{ ads_detail.seller_name|default:'' }},%20I%20am%20interested%20in%20your%20listing%20'{{ ads_detail.title }}'%20on%20PreLoved." target="_blank" class="action-whatsapp-btn mb-2">
+              <i class="lni-whatsapp"></i> Chat on WhatsApp
+            </a>
+
+            {% if ads_detail.author.user.email %}
+            <a href="mailto:{{ ads_detail.author.user.email }}?subject=Inquiry%20regarding%20{{ ads_detail.title }}" class="btn btn-sm btn-outline-secondary py-2" style="border-radius: 8px; font-weight: 600;">
+              <i class="lni-envelope mr-1"></i> Send Email
+            </a>
+            {% endif %}
+          </div>
+
+          <div class="mt-3 text-center">
+            <a href="{% url 'author-archive' ads_detail.author.pk %}" class="small text-primary font-weight-bold">
+              View all ads by this seller &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Safety Advice Card -->
+        <div class="p-3 mt-4" style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: 12px;">
+          <h6 style="font-size: 13px; font-weight: 700; color: #92400e; margin-bottom: 8px;">
+            <i class="lni-warning mr-1"></i> {{ safety_title|default:"Buyer Inspection & Safety Advice" }}
+          </h6>
+          <ul class="pl-3 mb-0" style="font-size: 12px; color: #78350f; line-height: 1.6;">
+            {% for tip in safety_tips %}
+            <li>{{ tip }}</li>
+            {% empty %}
+            <li>Meet the seller in a safe, open public space during daylight.</li>
+            <li>Inspect the item thoroughly before making any payment.</li>
+            <li>Never transfer advance money before physical verification.</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Ads Details End -->
+
+<!-- Video Modal -->
+{% if ads_detail.video %}
+<div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold">{{ ads_detail.title }} - Engine & Running Demo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        {% video ads_detail.video 'small' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Request a Call Modal -->
+<div class="modal fade" id="requestCallModal" tabindex="-1" role="dialog" aria-labelledby="requestCallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); overflow: hidden;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%); color: #ffffff; padding: 20px 24px; border: none;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+            <i class="lni-phone-handset"></i>
+          </div>
+          <div>
+            <h5 class="modal-title font-weight-bold" id="requestCallModalLabel" style="font-size: 18px; color: #ffffff; margin-bottom: 2px;">
+              Request a Callback
+            </h5>
+            <div style="font-size: 12px; color: #a7f3d0;">
+              Connect directly with {{ ads_detail.seller_name|default:ads_detail.author.user.username }}
+            </div>
+          </div>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body" style="padding: 24px;">
+
+        <!-- Compact Item Context -->
+        <div class="p-2 mb-3 d-flex align-items-center" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; gap: 12px;">
+          <div style="width: 44px; height: 44px; border-radius: 8px; background: #e2e8f0; overflow: hidden; flex-shrink: 0;">
+            {% if ads_photos %}
+              <img src="{{ ads_photos.0.image.url }}" alt="{{ ads_detail.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+              <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 18px;">
+                <i class="lni-image"></i>
+              </div>
+            {% endif %}
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div class="font-weight-bold text-truncate" style="font-size: 13px; color: #0f172a;">{{ ads_detail.title }}</div>
+            <div style="font-size: 12px; font-weight: 700; color: #059669;">₹{{ ads_detail.price }} &bull; {{ ads_detail.city }}</div>
+          </div>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="callRequestAlert" style="display: none; border-radius: 8px; padding: 12px; font-size: 13px; margin-bottom: 16px;"></div>
+
+        <!-- Request Form -->
+        <form id="requestCallForm" onsubmit="handleCallRequestSubmit(event);">
+          {% csrf_token %}
+
+          <div class="form-group mb-3">
+            <label style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+              Your Name <span class="text-danger">*</span>
+            </label>
+            <input type="text" name="buyer_name" class="form-control" placeholder="Enter your full name" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username }}{% endif %}" style="border-radius: 8px; font-size: 14px; padding: 10px 14px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+              Your Mobile Number <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text font-weight-bold" style="background: #f1f5f9; border-radius: 8px 0 0 8px; font-size: 13px;">+91</span>
+              </div>
+              <input type="tel" name="buyer_phone" class="form-control" placeholder="10-digit mobile number" required pattern="[0-9]{10,15}" style="border-radius: 0 8px 8px 0; font-size: 14px; padding: 10px 14px;">
+            </div>
+            <small class="form-text text-muted">The seller will use this number to contact you directly.</small>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+              Preferred Time to Call
+            </label>
+            <select name="preferred_time" class="form-control" style="border-radius: 8px; font-size: 14px;">
+              <option value="Anytime">Anytime (Best available)</option>
+              <option value="Morning">Morning (9:00 AM - 12:00 PM)</option>
+              <option value="Afternoon">Afternoon (12:00 PM - 5:00 PM)</option>
+              <option value="Evening">Evening (5:00 PM - 9:00 PM)</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-4">
+            <label style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+              Message / Question for Seller <span class="text-muted font-weight-normal">(Optional)</span>
+            </label>
+            <textarea name="message" class="form-control" rows="2" placeholder="e.g. Hi, is this item available? Can we negotiate on price?" style="border-radius: 8px; font-size: 14px; padding: 10px 14px;"></textarea>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-end gap-2">
+            <button type="button" class="btn btn-light px-3 py-2 font-weight-bold" data-dismiss="modal" style="border-radius: 8px; font-size: 14px;">
+              Cancel
+            </button>
+            <button type="submit" id="submitCallRequestBtn" class="btn btn-success px-4 py-2 font-weight-bold" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); border-radius: 8px; font-size: 14px; border: none; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
+              <span id="btnText"><i class="lni-phone-handset mr-1"></i> Send Call Request</span>
+              <span id="btnSpinner" style="display: none;"><i class="lni-reload lni-spin mr-1"></i> Sending...</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function handleCallRequestSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('requestCallForm');
+  const alertBox = document.getElementById('callRequestAlert');
+  const btn = document.getElementById('submitCallRequestBtn');
+  const btnText = document.getElementById('btnText');
+  const btnSpinner = document.getElementById('btnSpinner');
+
+  btn.disabled = true;
+  btnText.style.display = 'none';
+  btnSpinner.style.display = 'inline-block';
+  alertBox.style.display = 'none';
+
+  const formData = new FormData(form);
+
+  fetch("{% url 'request-call' pk=ads_detail.pk %}", {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    btn.disabled = false;
+    btnText.style.display = 'inline-block';
+    btnSpinner.style.display = 'none';
+
+    if (data.status === 'success') {
+      alertBox.className = 'alert alert-success';
+      alertBox.style.display = 'block';
+      alertBox.innerHTML = '<i class="lni-check-mark-circle mr-1"></i> ' + data.message;
+      
+      const triggerBtn = document.getElementById('requestCallTriggerBtn');
+      if (triggerBtn) {
+        triggerBtn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> <span>Call Requested (Send Again)</span>';
+      }
+
+      setTimeout(() => {
+        $('#requestCallModal').modal('hide');
+      }, 3500);
+    } else {
+      alertBox.className = 'alert alert-danger';
+      alertBox.style.display = 'block';
+      alertBox.innerHTML = '<i class="lni-warning mr-1"></i> ' + (data.message || 'Failed to send request.');
+    }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btnText.style.display = 'inline-block';
+    btnSpinner.style.display = 'none';
+    alertBox.className = 'alert alert-danger';
+    alertBox.style.display = 'block';
+    alertBox.innerHTML = '<i class="lni-warning mr-1"></i> An error occurred while submitting your request. Please try again.';
+  });
+}
+</script>
+
+{% endblock content %}

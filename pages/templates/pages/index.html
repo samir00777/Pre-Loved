@@ -1,0 +1,1104 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<style>
+  /* Scoped Modern Homepage Styles */
+  .pl-home-hero {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 45%, #1e1b4b 100%);
+    padding: 130px 0 70px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-home-hero::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.22) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .pl-home-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    left: -100px;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .pl-hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e7ff;
+    margin-bottom: 20px;
+    backdrop-filter: blur(8px);
+  }
+  .pl-hero-title {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin-bottom: 14px;
+  }
+  .pl-hero-title span {
+    background: linear-gradient(135deg, #818cf8 0%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .pl-hero-subtitle {
+    font-size: 17px;
+    color: #94a3b8;
+    max-width: 800px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+  /* Floating Search Card */
+  .pl-search-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 12px;
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    max-width: 1140px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+  .pl-search-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .pl-search-col-input {
+    flex: 2 1 240px;
+    position: relative;
+  }
+  .pl-search-col-select {
+    flex: 1 1 180px;
+    position: relative;
+  }
+  .pl-search-col-btn {
+    flex: 0 0 auto;
+  }
+  .pl-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  .pl-search-field {
+    width: 100%;
+    height: 52px;
+    padding: 10px 14px 10px 42px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #0f172a;
+    background: #f8fafc;
+    transition: all 0.2s;
+    outline: none;
+  }
+  .pl-search-field:focus {
+    background: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  }
+  .pl-btn-search {
+    height: 52px;
+    padding: 0 28px;
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+  }
+  .pl-btn-search:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+    color: #ffffff;
+  }
+  .pl-trending-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .pl-chip-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .pl-chip {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #e2e8f0;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: all 0.2s;
+  }
+  .pl-chip:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border-color: #818cf8;
+    transform: translateY(-1px);
+  }
+  /* Stats Strip */
+  .pl-stats-strip {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 24px;
+  }
+  .pl-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .pl-stat-item i {
+    color: #f59e0b;
+    font-size: 16px;
+  }
+
+  /* Section Headers */
+  .pl-section-head {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .pl-section-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #4f46e5;
+    background: #eef2ff;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    margin-bottom: 10px;
+  }
+  .pl-section-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .pl-section-sub {
+    font-size: 15px;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Category Showcase Grid */
+  .pl-cat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 14px;
+    text-align: center;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    height: 100%;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+  }
+  .pl-cat-card:hover {
+    transform: translateY(-4px);
+    border-color: #c7d2fe;
+    box-shadow: 0 14px 28px -6px rgba(79, 70, 229, 0.12);
+  }
+  .pl-cat-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  .pl-cat-card:hover .pl-cat-icon-box {
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  }
+  .pl-cat-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pl-cat-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+  .pl-cat-card:hover .pl-cat-count {
+    background: #e0e7ff;
+    color: #3730a3;
+    border-color: #c7d2fe;
+  }
+
+  /* Product Cards (Next-Gen Classifieds) */
+  .pl-product-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    position: relative;
+  }
+  .pl-product-card:hover {
+    transform: translateY(-5px);
+    border-color: #cbd5e1;
+    box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.12);
+  }
+  .pl-product-thumb-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 68%; /* 3:2 aspect ratio */
+    background: #f1f5f9;
+    overflow: hidden;
+  }
+  .pl-product-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+  .pl-product-card:hover .pl-product-thumb {
+    transform: scale(1.05);
+  }
+  .pl-badge-featured {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+  }
+  .pl-badge-condition {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+  .pl-product-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+  }
+  .pl-product-price {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .pl-product-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 38px;
+    text-decoration: none !important;
+  }
+  .pl-product-title:hover {
+    color: #4f46e5;
+  }
+  .pl-product-meta {
+    font-size: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #f1f5f9;
+  }
+  .pl-meta-loc {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pl-meta-time {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  /* How It Works Section */
+  .pl-hiw-section {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 64px 0;
+  }
+  .pl-step-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 28px 22px;
+    height: 100%;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    text-align: center;
+  }
+  .pl-step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .pl-step-icon {
+    font-size: 36px;
+    margin-bottom: 14px;
+  }
+  .pl-step-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+  }
+  .pl-step-desc {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+
+  /* Trust Pillars */
+  .pl-trust-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 36px;
+  }
+  .pl-trust-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .pl-trust-icon {
+    font-size: 24px;
+    color: #4f46e5;
+    background: #eef2ff;
+    padding: 10px;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .pl-trust-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+  .pl-trust-text {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+
+  /* Cities Hub */
+  .pl-city-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: #1e293b;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.2s;
+  }
+  .pl-city-pill:hover {
+    border-color: #4f46e5;
+    background: #eef2ff;
+    color: #4f46e5;
+    transform: translateY(-2px);
+  }
+
+  /* FAQ Accordion */
+  .pl-faq-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .pl-faq-btn {
+    width: 100%;
+    text-align: left;
+    padding: 18px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .pl-faq-btn:hover {
+    color: #4f46e5;
+  }
+  .pl-faq-body {
+    padding: 0 22px 18px;
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+    display: none;
+  }
+  .pl-faq-item.active .pl-faq-body {
+    display: block;
+  }
+  .pl-faq-item.active .pl-faq-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Call To Action Banner */
+  .pl-cta-banner {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+    border-radius: 24px;
+    padding: 50px 30px;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin: 50px 0;
+    box-shadow: 0 20px 40px rgba(30, 27, 75, 0.2);
+  }
+  .pl-cta-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .pl-cta-sub {
+    font-size: 16px;
+    color: #cbd5e1;
+    max-width: 580px;
+    margin: 0 auto 28px;
+  }
+  .pl-btn-cta {
+    background: #f59e0b;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 14px 34px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    transition: all 0.2s;
+  }
+  .pl-btn-cta:hover {
+    background: #d97706;
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+</style>
+
+<!-- ========================================== -->
+<!-- 1. HERO SEARCH SECTION (Front Page Dashboard) -->
+<!-- ========================================== -->
+<section class="pl-home-hero">
+  <div class="container text-center position-relative" style="z-index: 5;">
+    
+    <!-- Trust Pill Badge -->
+    <div class="pl-hero-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      <span>India's Verified Second-Hand Goods Marketplace</span>
+    </div>
+
+    <!-- Main Headline -->
+    <h1 class="pl-hero-title">
+      Buy & Sell Pre-Owned Items <span>Near You</span>
+    </h1>
+
+    <p class="pl-hero-subtitle">
+      Explore <strong>{{ total_ads_count|default:"380+" }} verified listings</strong> across <strong>{{ total_categories_count|default:"76" }} subcategories</strong>. Safe, local, 100% free with direct seller contacts.
+    </p>
+
+    <!-- Floating Master Search Form -->
+    <div class="pl-search-card">
+      <form method="GET" action="{% url 'ads-search' %}" class="pl-search-grid" id="main-search-form">
+        <!-- Keyword Input -->
+        <div class="pl-search-col-input">
+          <i class="lni-search pl-search-icon"></i>
+          <input type="text" id="customword-input" name="customword" placeholder="What are you looking for? (e.g. Activa, iPhone, Sofa...)" class="pl-search-field">
+        </div>
+
+        <!-- State / Location Select -->
+        <div class="pl-search-col-select">
+          <i class="lni-map-marker pl-search-icon"></i>
+          <select name="state_name" class="pl-search-field">
+            <option value="">All States (India)</option>
+            {% for s in state_search %}
+              <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Category Select -->
+        <div class="pl-search-col-select">
+          <i class="lni-grid-layout pl-search-icon"></i>
+          <select name="category_name" class="pl-search-field">
+            <option value="">All Categories</option>
+            {% for cat in category_search %}
+              <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pl-search-col-btn">
+          <button type="submit" class="pl-btn-search" id="home-search-btn">
+            <i class="lni-search" style="pointer-events: none;"></i>
+            <span style="pointer-events: none;">Search Ads</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Popular Trending Chips -->
+    <div class="pl-trending-chips">
+      <span class="pl-chip-label">Popular:</span>
+      <a href="javascript:void(0)" onclick="quickSearch('iPhone')" class="pl-chip">iPhone</a>
+      <a href="javascript:void(0)" onclick="quickSearch('Activa')" class="pl-chip">Honda Activa</a>
+      <a href="javascript:void(0)" onclick="quickSearch('Swift')" class="pl-chip">Maruti Swift</a>
+      <a href="javascript:void(0)" onclick="quickSearch('Royal Enfield')" class="pl-chip">Royal Enfield</a>
+      <a href="javascript:void(0)" onclick="quickSearch('Sofa')" class="pl-chip">Wooden Sofa</a>
+      <a href="javascript:void(0)" onclick="quickSearch('MacBook')" class="pl-chip">MacBook</a>
+      <a href="javascript:void(0)" onclick="quickSearch('Bicycle')" class="pl-chip">Gear Bicycle</a>
+    </div>
+
+    <!-- Live Statistics Strip -->
+    <div class="pl-stats-strip">
+      <div class="pl-stat-item">
+        <i class="lni-check-box"></i>
+        <span><strong>{{ total_ads_count|default:"380" }}</strong> Active Listings</span>
+      </div>
+      <div class="pl-stat-item">
+        <i class="lni-layers"></i>
+        <span><strong>12</strong> Categories / <strong>76</strong> Subcategories</span>
+      </div>
+      <div class="pl-stat-item">
+        <i class="lni-shield"></i>
+        <span><strong>100% Free</strong> Direct Seller Contact</span>
+      </div>
+      <div class="pl-stat-item">
+        <i class="lni-timer"></i>
+        <span>Instant Local Deals</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 2. EXPLORE POPULAR CATEGORIES GRID -->
+<!-- ========================================== -->
+<section class="py-5" style="background: #ffffff;">
+  <div class="container">
+    <div class="pl-section-head">
+      <span class="pl-section-badge">Browse Categories</span>
+      <h2 class="pl-section-title">Explore by Marketplace Category</h2>
+      <p class="pl-section-sub">Discover thousands of second-hand bargains classified into specialized categories</p>
+    </div>
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+      {% for cat in parent_categories %}
+      <div class="col mb-3">
+        <a href="{% url 'category-archive' cat.slug %}" class="pl-cat-card">
+          <div class="pl-cat-icon-box" style="background: {{ cat.bg }}; color: {{ cat.color }};">
+            {% if cat.svg %}
+              {{ cat.svg|safe }}
+            {% else %}
+              <i class="{{ cat.icon }}" style="font-size: 24px; color: {{ cat.color }};"></i>
+            {% endif %}
+          </div>
+          <div class="pl-cat-name">{{ cat.name }}</div>
+          <span class="pl-cat-count">{{ cat.count }} Ads</span>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 3. FEATURED LISTINGS SHOWCASE -->
+<!-- ========================================== -->
+<section class="py-5" style="background: #f8fafc; border-top: 1px solid #e2e8f0;">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+      <div>
+        <span class="pl-section-badge" style="background: #fef3c7; color: #b45309;">Prime Picks</span>
+        <h2 class="pl-section-title" style="text-align: left; margin-bottom: 4px;">Featured Classifieds</h2>
+        <p class="text-muted mb-0" style="font-size: 14px;">Handpicked, verified premium second-hand goods</p>
+      </div>
+      <a href="{% url 'ads-listing' %}" class="btn btn-outline-primary btn-sm font-weight-bold px-3 py-2 mt-2 mt-sm-0" style="border-radius: 10px;">
+        View All Listings <i class="lni-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="row">
+      {% for ad in featured_ads %}
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+        <div class="pl-product-card">
+          <button type="button" class="pl-wishlist-toggle-btn {% if ad.id in user_wishlist_ids %}active{% endif %}" data-ad-id="{{ ad.id }}" onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist({{ ad.id }}, this);" title="Save to Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if ad.id in user_wishlist_ids %}#ef4444{% else %}none{% endif %}" stroke="{% if ad.id in user_wishlist_ids %}#ef4444{% else %}currentColor{% endif %}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+          <a href="{% url 'ads-detail' ad.id %}" class="pl-product-thumb-wrap">
+            {% with img=ad.adsimages_set.first %}
+              {% if img and img.image %}
+                <img src="{{ img.image.url }}" alt="{{ ad.title }}" class="pl-product-thumb" loading="lazy">
+              {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="position: absolute; width: 100%; top: 0;">
+                  <i class="lni-image" style="font-size: 32px;"></i>
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <div class="pl-badge-featured">
+              <i class="lni-star-filled"></i> Featured
+            </div>
+
+            {% if ad.condition %}
+              <div class="pl-badge-condition">
+                {{ ad.condition }}
+              </div>
+            {% endif %}
+          </a>
+
+          <div class="pl-product-body">
+            <div>
+              <div class="pl-product-price">₹{{ ad.price|floatformat:0|intcomma }}</div>
+              <a href="{% url 'ads-detail' ad.id %}" class="pl-product-title" title="{{ ad.title }}">
+                {{ ad.title }}
+              </a>
+            </div>
+
+            <div class="pl-product-meta">
+              <div class="pl-meta-loc" title="{{ ad.city }}, {{ ad.state }}">
+                <i class="lni-map-marker text-danger"></i>
+                <span>{{ ad.city|default:"Gujarat" }}</span>
+              </div>
+              <div class="pl-meta-time">
+                {{ ad.date_created|date:"M d" }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 4. FRESH RECOMMENDATIONS / NEW ARRIVALS -->
+<!-- ========================================== -->
+<section class="py-5" style="background: #ffffff; border-top: 1px solid #e2e8f0;">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+      <div>
+        <span class="pl-section-badge">New Arrivals</span>
+        <h2 class="pl-section-title" style="text-align: left; margin-bottom: 4px;">Fresh Recommendations</h2>
+        <p class="text-muted mb-0" style="font-size: 14px;">Recently posted products across your favorite categories</p>
+      </div>
+      <a href="{% url 'ads-listing' %}" class="text-primary font-weight-bold" style="font-size: 14px;">
+        Browse All {{ total_ads_count }} Ads &rarr;
+      </a>
+    </div>
+
+    <div class="row">
+      {% for ad in recent_ads %}
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+        <div class="pl-product-card">
+          <button type="button" class="pl-wishlist-toggle-btn {% if ad.id in user_wishlist_ids %}active{% endif %}" data-ad-id="{{ ad.id }}" onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist({{ ad.id }}, this);" title="Save to Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if ad.id in user_wishlist_ids %}#ef4444{% else %}none{% endif %}" stroke="{% if ad.id in user_wishlist_ids %}#ef4444{% else %}currentColor{% endif %}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+          <a href="{% url 'ads-detail' ad.id %}" class="pl-product-thumb-wrap">
+            {% with img=ad.adsimages_set.first %}
+              {% if img and img.image %}
+                <img src="{{ img.image.url }}" alt="{{ ad.title }}" class="pl-product-thumb" loading="lazy">
+              {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="position: absolute; width: 100%; top: 0;">
+                  <i class="lni-image" style="font-size: 32px;"></i>
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            {% if ad.is_featured %}
+              <div class="pl-badge-featured">
+                <i class="lni-star-filled"></i> Featured
+              </div>
+            {% endif %}
+
+            <div class="pl-badge-condition">
+              {{ ad.condition|default:"Used" }}
+            </div>
+          </a>
+
+          <div class="pl-product-body">
+            <div>
+              <div class="pl-product-price">₹{{ ad.price|floatformat:0|intcomma }}</div>
+              <a href="{% url 'ads-detail' ad.id %}" class="pl-product-title" title="{{ ad.title }}">
+                {{ ad.title }}
+              </a>
+            </div>
+
+            <div class="pl-product-meta">
+              <div class="pl-meta-loc" title="{{ ad.city }}, {{ ad.state }}">
+                <i class="lni-map-marker text-danger"></i>
+                <span>{{ ad.city|default:"Gujarat" }}</span>
+              </div>
+              <div class="pl-meta-time">
+                {{ ad.date_created|date:"M d" }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Center Load More / Explore Button -->
+    <div class="text-center mt-3">
+      <a href="{% url 'ads-listing' %}" class="btn btn-primary font-weight-bold px-4 py-2.5 shadow-sm" style="background: #4f46e5; border-color: #4f46e5; border-radius: 12px; font-size: 15px;">
+        <i class="lni-grid-layout mr-1"></i> Explore Full Marketplace
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 5. HOW IT WORKS (3 Simple Steps) -->
+<!-- ========================================== -->
+<section class="pl-hiw-section">
+  <div class="container">
+    <div class="pl-section-head">
+      <span class="pl-section-badge">How It Works</span>
+      <h2 class="pl-section-title">Buy & Sell in 3 Easy Steps</h2>
+      <p class="pl-section-sub">Simple, fast, and 100% free with zero commissions or hidden charges</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Step 1 -->
+      <div class="col-md-4 mb-4 mb-md-0">
+        <div class="pl-step-card">
+          <div class="pl-step-num">1</div>
+          <div class="pl-step-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          </div>
+          <h3 class="pl-step-title">Post Your Free Ad in 60s</h3>
+          <p class="pl-step-desc">
+            Snap photos from your phone, describe the item condition, and set your fair price. Takes under a minute.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="col-md-4 mb-4 mb-md-0">
+        <div class="pl-step-card">
+          <div class="pl-step-num">2</div>
+          <div class="pl-step-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </div>
+          <h3 class="pl-step-title">Connect with Local Buyers</h3>
+          <p class="pl-step-desc">
+            Receive direct phone calls and WhatsApp inquiries from genuine buyers living in your neighborhood.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="col-md-4">
+        <div class="pl-step-card">
+          <div class="pl-step-num">3</div>
+          <div class="pl-step-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+          </div>
+          <h3 class="pl-step-title">Meet, Inspect & Get Paid</h3>
+          <p class="pl-step-desc">
+            Meet safely in person, let the buyer test the item, collect instant cash or UPI, and complete the deal.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 6. WHY CHOOSE PRELOVED (Trust & Value Badges) -->
+<!-- ========================================== -->
+<section class="py-5" style="background: #ffffff;">
+  <div class="container">
+    <div class="pl-section-head">
+      <span class="pl-section-badge">Trust & Safety</span>
+      <h2 class="pl-section-title">Why PreLoved is India's Choice</h2>
+      <p class="pl-section-sub">Built for safe, transparent, and profitable neighborhood re-commerce</p>
+    </div>
+
+    <div class="pl-trust-grid">
+      <div class="pl-trust-card">
+        <div class="pl-trust-icon"><i class="lni-shield"></i></div>
+        <div>
+          <h4 class="pl-trust-title">100% Free & No Brokerage</h4>
+          <p class="pl-trust-text">Keep 100% of your earnings. No commission fees, listing charges, or hidden subscriptions.</p>
+        </div>
+      </div>
+
+      <div class="pl-trust-card">
+        <div class="pl-trust-icon"><i class="lni-certificate"></i></div>
+        <div>
+          <h4 class="pl-trust-title">Verified Sellers & RC Docs</h4>
+          <p class="pl-trust-text">Vehicles marked with verified Registration Certificates and verified phone contacts.</p>
+        </div>
+      </div>
+
+      <div class="pl-trust-card">
+        <div class="pl-trust-icon"><i class="lni-map"></i></div>
+        <div>
+          <h4 class="pl-trust-title">Hyper-Local Deals</h4>
+          <p class="pl-trust-text">Meet buyers and sellers in your city. Inspect before paying — no shipping risks or delivery wait.</p>
+        </div>
+      </div>
+
+      <div class="pl-trust-card">
+        <div class="pl-trust-icon"><i class="lni-leaf"></i></div>
+        <div>
+          <h4 class="pl-trust-title">Eco-Friendly & Sustainable</h4>
+          <p class="pl-trust-text">Give second-hand items a second life. Reduce manufacturing waste and save up to 70% off retail.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 7. POPULAR CITIES HUB -->
+<!-- ========================================== -->
+<section class="py-5" style="background: #f8fafc; border-top: 1px solid #e2e8f0;">
+  <div class="container">
+    <div class="pl-section-head mb-4">
+      <span class="pl-section-badge">Locations</span>
+      <h2 class="pl-section-title">Explore Classifieds by City</h2>
+      <p class="pl-section-sub">Find active second-hand products near you</p>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      {% for city in popular_cities %}
+      <a href="{% url 'city-archive' city.slug %}" class="pl-city-pill">
+        <span><i class="lni-map-marker text-danger mr-1"></i>{{ city.city_name }}</span>
+        <span class="badge badge-light ml-2 text-primary font-weight-bold" style="background: #eef2ff; border-radius: 6px;">{{ city.ads_count }}</span>
+      </a>
+      {% empty %}
+      <a href="{% url 'ads-listing' %}" class="pl-city-pill"><span><i class="lni-map-marker text-danger mr-1"></i>Ahmedabad</span></a>
+      <a href="{% url 'ads-listing' %}" class="pl-city-pill"><span><i class="lni-map-marker text-danger mr-1"></i>Surat</span></a>
+      <a href="{% url 'ads-listing' %}" class="pl-city-pill"><span><i class="lni-map-marker text-danger mr-1"></i>Vadodara</span></a>
+      <a href="{% url 'ads-listing' %}" class="pl-city-pill"><span><i class="lni-map-marker text-danger mr-1"></i>Rajkot</span></a>
+      <a href="{% url 'ads-listing' %}" class="pl-city-pill"><span><i class="lni-map-marker text-danger mr-1"></i>Mumbai</span></a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 8. FREQUENTLY ASKED QUESTIONS (Accordion) -->
+<!-- ========================================== -->
+<section class="py-5" style="background: #ffffff; border-top: 1px solid #e2e8f0;">
+  <div class="container" style="max-width: 960px;">
+    <div class="pl-section-head">
+      <span class="pl-section-badge">Help Center</span>
+      <h2 class="pl-section-title">Frequently Asked Questions</h2>
+      <p class="pl-section-sub">Everything you need to know about buying and selling on PreLoved</p>
+    </div>
+
+    <div class="pl-faq-item">
+      <button type="button" class="pl-faq-btn" onclick="toggleFaq(this)">
+        <span>How do I post a free ad on PreLoved?</span>
+        <i class="lni-chevron-down pl-faq-icon"></i>
+      </button>
+      <div class="pl-faq-body">
+        Click the <strong>"Post An Ad"</strong> button in the top navigation bar. Fill in your item's title, price, category, photos, condition, and your contact phone number. Your ad goes live immediately with zero fees!
+      </div>
+    </div>
+
+    <div class="pl-faq-item">
+      <button type="button" class="pl-faq-btn" onclick="toggleFaq(this)">
+        <span>Is PreLoved completely free to use?</span>
+        <i class="lni-chevron-down pl-faq-icon"></i>
+      </button>
+      <div class="pl-faq-body">
+        Yes! PreLoved is 100% free for both buyers and sellers. You can post ads, browse unlimited listings, and call or message sellers directly without paying any commission or fee.
+      </div>
+    </div>
+
+    <div class="pl-faq-item">
+      <button type="button" class="pl-faq-btn" onclick="toggleFaq(this)">
+        <span>How do I contact a seller?</span>
+        <i class="lni-chevron-down pl-faq-icon"></i>
+      </button>
+      <div class="pl-faq-body">
+        Every listing has direct seller contact details including a verified phone number and location. You can call or WhatsApp the seller directly to negotiate and arrange a local viewing.
+      </div>
+    </div>
+
+    <div class="pl-faq-item">
+      <button type="button" class="pl-faq-btn" onclick="toggleFaq(this)">
+        <span>How can I buy second-hand items safely?</span>
+        <i class="lni-chevron-down pl-faq-icon"></i>
+      </button>
+      <div class="pl-faq-body">
+        Always meet the seller in a busy, public place (like a cafe or market). Inspect the product thoroughly, test electronics/vehicles, check original bills or warranty cards, and only pay after you are satisfied. Never send advance deposits.
+      </div>
+    </div>
+
+    <div class="pl-faq-item">
+      <button type="button" class="pl-faq-btn" onclick="toggleFaq(this)">
+        <span>What items can I buy and sell on PreLoved?</span>
+        <i class="lni-chevron-down pl-faq-icon"></i>
+      </button>
+      <div class="pl-faq-body">
+        You can buy and sell almost anything legal — used cars, bikes, scooters, smartphones, laptops, electronics, home furniture, clothes, books, baby items, real estate, and tools across 76 subcategories.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 9. READY TO SELL CALL TO ACTION BANNER -->
+<!-- ========================================== -->
+<div class="container">
+  <div class="pl-cta-banner">
+    <h2 class="pl-cta-title">Ready to Sell Your Unused Items?</h2>
+    <p class="pl-cta-sub">
+      Turn your old phone, unused bike, or surplus furniture into instant cash. Free ad posting with direct buyer calls in minutes.
+    </p>
+    <a href="{% url 'post-ads' %}" class="pl-btn-cta">
+      <i class="lni-plus"></i> Post Your Free Ad Now
+    </a>
+  </div>
+</div>
+
+<script>
+  function quickSearch(keyword) {
+    document.getElementById('customword-input').value = keyword;
+    document.getElementById('main-search-form').submit();
+  }
+
+  function toggleFaq(btn) {
+    const parent = btn.parentElement;
+    parent.classList.toggle('active');
+  }
+</script>
+{% endblock content %}

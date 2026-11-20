@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<!-- PreLoved Modern Hero Header -->
+<div class="pl-dashboard-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="pl-dashboard-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          <span>Account Security</span>
+        </div>
+        <h1 class="pl-dashboard-hero-title">Close Account</h1>
+        <p class="pl-dashboard-hero-sub">Danger zone: permanently deactivate or remove your PreLoved account.</p>
+      </div>
+      <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
+        <a href="{% url 'dashboard' %}" class="pl-hero-post-btn" style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.25);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          <span>Return to Dashboard</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Start Content -->
+<div class="pl-dashboard-content">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8 col-sm-12">
+        <div class="pl-table-card" style="padding: 36px 30px; text-align: center;">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: #fee2e2; border: 1px solid #fecaca; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; color: #dc2626;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </div>
+          <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Are you sure you want to close your account?</h3>
+          <p style="font-size: 14px; color: #64748b; line-height: 1.5; margin-bottom: 24px;">Closing your account will remove your classified listings and active chats. This action cannot be easily undone.</p>
+          <div style="display: flex; gap: 12px; justify-content: center; align-items: center;">
+            <a href="{% url 'dashboard' %}" class="pl-filter-tab" style="padding: 10px 24px; font-size: 14px; text-decoration: none !important;">Cancel</a>
+            <form method="POST" action="{% url 'profile-close' %}" style="display: inline; margin: 0;">
+              {% csrf_token %}
+              <button type="submit" class="pl-hero-post-btn" style="background: #dc2626; padding: 10px 24px; font-size: 14px; border: none; cursor: pointer;">
+                Sign Out &amp; Deactivate
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .pl-dashboard-hero {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+    padding: 120px 0 45px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-dashboard-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c7d2fe;
+    margin-bottom: 10px;
+  }
+  .pl-dashboard-hero-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .pl-dashboard-hero-sub {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0;
+  }
+  .pl-dashboard-content {
+    padding-bottom: 60px;
+  }
+  .pl-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  }
+</style>
+{% endblock content %}

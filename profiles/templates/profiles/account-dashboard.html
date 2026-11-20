@@ -1,0 +1,745 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<!-- PreLoved Modern Hero Header -->
+<div class="pl-dashboard-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="pl-dashboard-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Member Control Center</span>
+        </div>
+        <h1 class="pl-dashboard-hero-title">Account Dashboard</h1>
+        <p class="pl-dashboard-hero-sub">Welcome back, <strong>{{ request.user.username }}</strong>! Track your listings, views, and selling performance across PreLoved.</p>
+      </div>
+      <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
+        <a href="{% url 'post-ads' %}" class="pl-hero-post-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Post An Ad Now</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="pl-dashboard-content">
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar Column -->
+      {% include 'profiles/account-sidebar.html' %}
+
+      <!-- Main Column -->
+      <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="pl-dashboard-main">
+
+          <!-- 4-Card Stats Metric Grid -->
+          <div class="pl-stats-grid">
+            <!-- Total Ads -->
+            <div class="pl-stat-card pl-stat-indigo">
+              <div class="pl-stat-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              </div>
+              <div class="pl-stat-info">
+                <div class="pl-stat-value">{{ total_ads|default:"0" }}</div>
+                <div class="pl-stat-label">Total Listings</div>
+                <div class="pl-stat-desc">All lifetime posted ads</div>
+              </div>
+            </div>
+
+            <!-- Active Ads -->
+            <div class="pl-stat-card pl-stat-emerald">
+              <div class="pl-stat-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div class="pl-stat-info">
+                <div class="pl-stat-value">{{ active_ads|default:"0" }}</div>
+                <div class="pl-stat-label">Active &amp; Live</div>
+                <div class="pl-stat-desc">Discoverable by buyers</div>
+              </div>
+            </div>
+
+            <!-- Featured Ads -->
+            <div class="pl-stat-card pl-stat-amber">
+              <div class="pl-stat-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <div class="pl-stat-info">
+                <div class="pl-stat-value">{{ featured_ads|default:"0" }}</div>
+                <div class="pl-stat-label">Featured Ads</div>
+                <div class="pl-stat-desc">High visibility promotion</div>
+              </div>
+            </div>
+
+            <!-- Sold Ads -->
+            <div class="pl-stat-card pl-stat-violet">
+              <div class="pl-stat-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              </div>
+              <div class="pl-stat-info">
+                <div class="pl-stat-value">{{ sold_ads|default:"0" }}</div>
+                <div class="pl-stat-label">Sold Deals</div>
+                <div class="pl-stat-desc">Successfully re-homed</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Listings Card Container -->
+          <div class="pl-table-card">
+            <!-- Card Header -->
+            <div class="pl-table-card-header">
+              <div class="pl-card-title-group">
+                <h2 class="pl-card-title">Your Classified Listings</h2>
+                <span class="pl-card-badge">{{ total_ads|default:"0" }} Total</span>
+              </div>
+              <div class="pl-card-actions">
+                <a href="{% url 'profile-ads' %}" class="pl-link-view-all">
+                  <span>Manage All Ads</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Card Body / Listings -->
+            {% if ads_posted %}
+            <div class="table-responsive">
+              <table class="pl-modern-table">
+                <thead>
+                  <tr>
+                    <th style="min-width: 280px;">Item / Ad Title</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Date Posted</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ad in ads_posted %}
+                  <tr>
+                    <!-- Item / Title -->
+                    <td>
+                      <div class="pl-product-cell">
+                        <a href="{% url 'ads-detail' ad.pk %}" class="pl-thumb-wrap">
+                          {% if ad.adsimages_set.first %}
+                            <img src="{{ ad.adsimages_set.first.image.url }}" alt="{{ ad.title }}" class="pl-table-thumb" onerror="this.onerror=null; this.src='{% static 'images/site-logo.png' %}';">
+                          {% else %}
+                            <img src="{% static 'images/site-logo.png' %}" alt="{{ ad.title }}" class="pl-table-thumb">
+                          {% endif %}
+                        </a>
+                        <div class="pl-product-info">
+                          <a href="{% url 'ads-detail' ad.pk %}" class="pl-product-title" title="{{ ad.title }}">
+                            {{ ad.title }}
+                          </a>
+                          <div class="pl-product-meta">
+                            {% if ad.city %}
+                              <span>
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                {{ ad.city.city_name }}{% if ad.state %}, {{ ad.state.state_name }}{% endif %}
+                              </span>
+                            {% endif %}
+                            {% if ad.condition %}
+                              <span class="pl-meta-dot">&bull;</span>
+                              <span>{{ ad.condition }}</span>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <!-- Category -->
+                    <td>
+                      {% if ad.category %}
+                        <a href="{% url 'category-archive' ad.category.slug %}" class="pl-cat-pill">
+                          {{ ad.category.category_name }}
+                        </a>
+                      {% else %}
+                        <span class="pl-cat-pill">General</span>
+                      {% endif %}
+                    </td>
+
+                    <!-- Price -->
+                    <td>
+                      <div class="pl-price-val">&#8377;{{ ad.price|floatformat:0|intcomma }}</div>
+                      {% if ad.is_negotiable %}
+                        <div class="pl-price-sub">Negotiable</div>
+                      {% endif %}
+                    </td>
+
+                    <!-- Date -->
+                    <td>
+                      <div class="pl-date-val">{{ ad.date_created|date:"M d, Y" }}</div>
+                      <div class="pl-date-time">{{ ad.date_created|time:"h:i A" }}</div>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                      {% if ad.is_sold %}
+                        <span class="pl-status-badge pl-status-sold">
+                          <span class="pl-dot"></span>
+                          <span>Sold Out</span>
+                        </span>
+                      {% elif ad.is_active %}
+                        <span class="pl-status-badge pl-status-active">
+                          <span class="pl-dot"></span>
+                          <span>Active</span>
+                        </span>
+                      {% else %}
+                        <span class="pl-status-badge pl-status-inactive">
+                          <span class="pl-dot"></span>
+                          <span>Inactive</span>
+                        </span>
+                      {% endif %}
+                      {% if ad.is_featured %}
+                        <div style="margin-top: 4px;">
+                          <span class="pl-badge-featured-mini">Featured</span>
+                        </div>
+                      {% endif %}
+                    </td>
+
+                    <!-- Actions -->
+                    <td style="text-align: right;">
+                      <div class="pl-action-btns">
+                        <a href="{% url 'payments-promote' ad_id=ad.pk %}" class="pl-action-btn pl-action-promote" title="Boost / Promote Ad">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </a>
+                        <a href="{% url 'ads-edit' pk=ad.pk %}" class="pl-action-btn pl-action-edit" title="Edit Listing Details">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </a>
+                        <a href="{% url 'ads-detail' ad.pk %}" class="pl-action-btn pl-action-view" title="View Live Ad on PreLoved" target="_blank">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </a>
+                        <a href="{% url 'ads-delete' pk=ad.pk %}" class="pl-action-btn pl-action-delete" title="Delete Ad" onclick="return confirm('Are you sure you want to delete this listing? This action cannot be reversed.');">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            {% else %}
+            <!-- Modern Empty State -->
+            <div class="pl-empty-state">
+              <div class="pl-empty-icon-wrap">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              </div>
+              <h3 class="pl-empty-title">No Classified Ads Posted Yet</h3>
+              <p class="pl-empty-desc">You haven't listed any items for sale. Post your pre-loved electronics, vehicles, furniture, or clothes today and connect with thousands of buyers across India!</p>
+              <a href="{% url 'post-ads' %}" class="pl-empty-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Post Your First Ad</span>
+              </a>
+            </div>
+            {% endif %}
+
+          </div>
+          <!-- End Listings Card -->
+
+        </div>
+      </div>
+      <!-- End Main Column -->
+    </div>
+  </div>
+</div>
+
+<style>
+  /* PreLoved Modern Dashboard Styles */
+  .pl-dashboard-hero {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+    padding: 120px 0 45px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .pl-dashboard-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c7d2fe;
+    margin-bottom: 10px;
+  }
+  .pl-dashboard-hero-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .pl-dashboard-hero-sub {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0;
+    max-width: 620px;
+  }
+  .pl-dashboard-hero-sub strong {
+    color: #f1f5f9;
+  }
+  .pl-hero-post-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #4f46e5;
+    color: #ffffff !important;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 11px 22px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+    transition: all 0.2s ease;
+  }
+  .pl-hero-post-btn:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+  }
+
+  /* Main Container */
+  .pl-dashboard-content {
+    padding-bottom: 60px;
+  }
+  .pl-dashboard-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* 4-Card Stats Grid */
+  .pl-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 991px) {
+    .pl-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 575px) {
+    .pl-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pl-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s ease;
+  }
+  .pl-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  }
+  .pl-stat-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pl-stat-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .pl-stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    margin-bottom: 2px;
+    letter-spacing: -0.02em;
+  }
+  .pl-stat-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 2px;
+  }
+  .pl-stat-desc {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  /* Stat Themes */
+  .pl-stat-indigo .pl-stat-icon-wrap {
+    background: #eef2ff;
+    color: #4f46e5;
+  }
+  .pl-stat-emerald .pl-stat-icon-wrap {
+    background: #ecfdf5;
+    color: #059669;
+  }
+  .pl-stat-amber .pl-stat-icon-wrap {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  .pl-stat-violet .pl-stat-icon-wrap {
+    background: #f5f3ff;
+    color: #7c3aed;
+  }
+
+  /* Table Card */
+  .pl-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
+  .pl-table-card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .pl-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pl-card-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .pl-card-badge {
+    padding: 3px 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #475569;
+  }
+  .pl-link-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4f46e5;
+    text-decoration: none !important;
+  }
+  .pl-link-view-all:hover {
+    color: #3730a3;
+    text-decoration: underline !important;
+  }
+
+  /* Modern Table */
+  .pl-modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+  }
+  .pl-modern-table thead th {
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 12px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+  }
+  .pl-modern-table tbody tr {
+    transition: background 0.15s ease;
+  }
+  .pl-modern-table tbody tr:hover {
+    background: #f8fafc;
+  }
+  .pl-modern-table tbody td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  .pl-modern-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Product Cell */
+  .pl-product-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .pl-thumb-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pl-table-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pl-product-info {
+    min-width: 0;
+  }
+  .pl-product-title {
+    display: block;
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 14px;
+    line-height: 1.35;
+    text-decoration: none !important;
+    transition: color 0.15s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .pl-product-title:hover {
+    color: #4f46e5;
+  }
+  .pl-product-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 3px;
+  }
+  .pl-product-meta svg {
+    vertical-align: -1px;
+    margin-right: 2px;
+  }
+  .pl-meta-dot {
+    color: #cbd5e1;
+  }
+
+  /* Category Pill */
+  .pl-cat-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .pl-cat-pill:hover {
+    background: #eef2ff;
+    color: #4f46e5;
+    border-color: #c7d2fe;
+  }
+
+  /* Price */
+  .pl-price-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: #4f46e5;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .pl-price-sub {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  /* Date */
+  .pl-date-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    white-space: nowrap;
+  }
+  .pl-date-time {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  /* Status Badges */
+  .pl-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pl-status-badge .pl-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .pl-status-active {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+  }
+  .pl-status-active .pl-dot {
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  }
+  .pl-status-sold {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fde68a;
+  }
+  .pl-status-sold .pl-dot {
+    background: #f59e0b;
+  }
+  .pl-status-inactive {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+  }
+  .pl-status-inactive .pl-dot {
+    background: #94a3b8;
+  }
+  .pl-badge-featured-mini {
+    display: inline-block;
+    padding: 1px 7px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  /* Action Buttons */
+  .pl-action-btns {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pl-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+  }
+  .pl-action-promote:hover {
+    background: #fffbeb;
+    color: #f59e0b;
+    border-color: #fde68a;
+    transform: translateY(-1px);
+  }
+  .pl-action-edit:hover {
+    background: #eef2ff;
+    color: #4f46e5;
+    border-color: #a5b4fc;
+    transform: translateY(-1px);
+  }
+  .pl-action-view:hover {
+    background: #eef2ff;
+    color: #4f46e5;
+    border-color: #c7d2fe;
+  }
+  .pl-action-delete:hover {
+    background: #fef2f2;
+    color: #ef4444;
+    border-color: #fca5a5;
+  }
+
+  /* Empty State */
+  .pl-empty-state {
+    padding: 60px 24px;
+    text-align: center;
+  }
+  .pl-empty-icon-wrap {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .pl-empty-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+  .pl-empty-desc {
+    font-size: 14px;
+    color: #64748b;
+    max-width: 460px;
+    margin: 0 auto 20px;
+    line-height: 1.5;
+  }
+  .pl-empty-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: #4f46e5;
+    color: #ffffff !important;
+    font-size: 13.5px;
+    font-weight: 700;
+    border-radius: 12px;
+    text-decoration: none !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    transition: all 0.2s ease;
+  }
+  .pl-empty-btn:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+  }
+</style>
+{% endblock content %}

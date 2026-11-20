@@ -1,0 +1,144 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Users & Sellers - PreLoved Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Registered Users & Sellers</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400">View and manage marketplace participants, sellers, and administrators.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{% url 'custom_admin:export' %}?type=users" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium shadow-sm transition-colors" title="Download Users Directory as CSV">
+                <i class="fa-solid fa-file-arrow-down text-xs"></i>
+                <span>Export Users (CSV)</span>
+            </a>
+            <a href="/django-admin/auth/user/add/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm transition-colors">
+                <i class="fa-solid fa-user-plus text-xs"></i>
+                <span>Add New User</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Accounts</span>
+            <div class="text-2xl font-bold text-slate-900 dark:text-white mt-1">{{ users|length }}</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Platform Listings</span>
+            <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{{ total_ads_count }}</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Primary Administrator</span>
+            <div class="text-base font-bold text-indigo-600 dark:text-indigo-400 mt-1">Samir Karavadara (Super Admin)</div>
+        </div>
+    </div>
+
+    <!-- Users Table Card -->
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-800">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:bg-slate-900/60 dark:text-slate-400 dark:border-slate-700">
+                    <tr>
+                        <th scope="col" class="py-3 px-4 w-12 text-center">ID</th>
+                        <th scope="col" class="py-3 px-4 min-w-[200px]">User Account</th>
+                        <th scope="col" class="py-3 px-4 min-w-[180px]">Email</th>
+                        <th scope="col" class="py-3 px-4 min-w-[130px]">Role / Access</th>
+                        <th scope="col" class="py-3 px-4 min-w-[150px]">Date Joined</th>
+                        <th scope="col" class="py-3 px-4 min-w-[100px] text-center">Ads Posted</th>
+                        <th scope="col" class="py-3 px-4 min-w-[120px] text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60">
+                    {% for u in users %}
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-750 transition-colors">
+                        <!-- ID -->
+                        <td class="py-3.5 px-4 text-center font-mono text-xs text-slate-400">
+                            {{ u.id }}
+                        </td>
+
+                        <!-- User Account -->
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 shrink-0 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                                    {{ u.username|slice:":1"|upper }}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                                        <span>{{ u.username }}</span>
+                                        {% if u.is_superuser %}
+                                            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300">SUPERUSER</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-xs text-slate-400 truncate">
+                                        {{ u.get_full_name|default:"PreLoved User" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Email -->
+                        <td class="py-3.5 px-4">
+                            <span class="text-slate-700 dark:text-slate-300 font-mono text-xs">{{ u.email|default:"no-email@preloved.in" }}</span>
+                        </td>
+
+                        <!-- Role -->
+                        <td class="py-3.5 px-4">
+                            {% if u.is_superuser %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300">
+                                    <i class="fa-solid fa-shield-halved text-[10px]"></i> Super Admin
+                                </span>
+                            {% elif u.is_staff %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+                                    <i class="fa-solid fa-user-shield text-[10px]"></i> Staff
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                    <i class="fa-solid fa-user text-[10px]"></i> Seller / User
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Date Joined -->
+                        <td class="py-3.5 px-4 text-xs text-slate-500 dark:text-slate-400">
+                            {{ u.date_joined|date:"M d, Y" }}
+                        </td>
+
+                        <!-- Ads Posted -->
+                        <td class="py-3.5 px-4 text-center">
+                            {% if u.ads_count > 0 %}
+                                <a href="/admin/ads/?user={{ u.id }}" class="inline-block px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold text-xs transition-colors" title="View all {{ u.ads_count }} ads posted by {{ u.username }}">
+                                    {{ u.ads_count }}
+                                </a>
+                            {% else %}
+                                <span class="text-slate-400 text-xs">0</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="py-3.5 px-4 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <a href="/admin/ads/?user={{ u.id }}" class="p-1.5 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="View Ads for {{ u.username }}">
+                                    <i class="fa-solid fa-boxes-stacked text-xs"></i>
+                                </a>
+                                <a href="/django-admin/auth/user/{{ u.id }}/change/" target="_blank" class="p-1.5 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Edit in Django Admin">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-slate-400">No registered users found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

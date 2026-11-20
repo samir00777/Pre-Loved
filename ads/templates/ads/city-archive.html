@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<style>
+  .pl-archive-header {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+    padding: 130px 0 45px;
+    color: #ffffff;
+    margin-bottom: 35px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-archive-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+  }
+  .pl-archive-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+  .pl-archive-sub {
+    font-size: 15px;
+    color: #94a3b8;
+  }
+
+  /* Product Card */
+  .pl-product-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    position: relative;
+  }
+  .pl-product-card:hover {
+    transform: translateY(-5px);
+    border-color: #cbd5e1;
+    box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.12);
+  }
+  .pl-product-thumb-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 68%;
+    background: #f1f5f9;
+    overflow: hidden;
+  }
+  .pl-product-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+  .pl-product-card:hover .pl-product-thumb {
+    transform: scale(1.05);
+  }
+  .pl-badge-featured {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+  }
+  .pl-badge-condition {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+  .pl-product-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+  }
+  .pl-product-price {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .pl-product-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 38px;
+    text-decoration: none !important;
+  }
+  .pl-product-title:hover {
+    color: #4f46e5;
+  }
+  .pl-product-meta {
+    font-size: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #f1f5f9;
+  }
+  .pl-meta-loc {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pl-meta-time {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+</style>
+
+<!-- Header Banner -->
+<div class="pl-archive-header">
+  <div class="container text-center">
+    <div class="pl-archive-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+      <span>City Marketplace</span>
+    </div>
+    <h1 class="pl-archive-title">Used Items in {{ city.city_name }}</h1>
+    <p class="pl-archive-sub">
+      Showing <strong>{{ ads_by_city|length }} verified listings</strong> in {{ city.city_name }}
+    </p>
+  </div>
+</div>
+
+<!-- Listings Grid -->
+<div class="container pb-5">
+  <div class="row">
+    {% if ads_by_city %}
+      {% for ads in ads_by_city %}
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+        <div class="pl-product-card">
+          <a href="{% url 'ads-detail' ads.id %}" class="pl-product-thumb-wrap">
+            {% with img=ads.adsimages_set.first %}
+              {% if img and img.image %}
+                <img src="{{ img.image.url }}" alt="{{ ads.title }}" class="pl-product-thumb" loading="lazy">
+              {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="position: absolute; width: 100%; top: 0;">
+                  <i class="lni-image" style="font-size: 32px;"></i>
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            {% if ads.is_featured %}
+              <div class="pl-badge-featured">
+                <i class="lni-star-filled"></i> Featured
+              </div>
+            {% endif %}
+
+            <div class="pl-badge-condition">
+              {{ ads.condition|default:"Used" }}
+            </div>
+          </a>
+
+          <div class="pl-product-body">
+            <div>
+              <div class="pl-product-price">₹{{ ads.price|floatformat:0|intcomma }}</div>
+              <a href="{% url 'ads-detail' ads.id %}" class="pl-product-title" title="{{ ads.title }}">
+                {{ ads.title }}
+              </a>
+            </div>
+
+            <div class="pl-product-meta">
+              <div class="pl-meta-loc" title="{{ ads.city }}, {{ ads.state }}">
+                <i class="lni-map-marker text-danger"></i>
+                <span>{{ ads.city.city_name|default:city.city_name }}</span>
+              </div>
+              <div class="pl-meta-time">
+                {{ ads.date_created|date:"M d" }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12 text-center py-5">
+        <div class="p-5 bg-white rounded-xl shadow-sm border border-slate-200" style="border-radius: 16px;">
+          <i class="lni-package text-muted" style="font-size: 48px; display: block; margin-bottom: 12px;"></i>
+          <h4 class="font-weight-bold text-dark mb-2">No Listings Found in {{ city.city_name }}</h4>
+          <p class="text-muted mb-4">Be the first seller in {{ city.city_name }} to post a free classified ad!</p>
+          <a href="{% url 'post-ads' %}" class="btn btn-primary px-4 py-2" style="background: #4f46e5; border-color: #4f46e5; border-radius: 10px;">
+            <i class="lni-plus mr-1"></i> Post An Ad in {{ city.city_name }}
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

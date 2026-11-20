@@ -1,0 +1,348 @@
+{% load static %}
+<!-- PreLoved Modern Account Sidebar -->
+<div class="col-sm-12 col-md-4 col-lg-3 page-sidebar">
+  <aside class="pl-account-sidebar-card">
+    <!-- User Profile Header -->
+    <div class="pl-sidebar-user-header">
+      <div class="pl-avatar-wrapper">
+        {% if request.user.author.profile_pic %}
+          <img src="{{ request.user.author.profile_pic.url }}" alt="{{ request.user.username }}" class="pl-sidebar-avatar" onerror="this.onerror=null; this.src='{% static 'images/site-logo.png' %}';">
+        {% else %}
+          <div class="pl-avatar-placeholder">
+            <span>{{ request.user.username|make_list|first|upper }}</span>
+          </div>
+        {% endif %}
+        <span class="pl-online-indicator" title="Active Now"></span>
+      </div>
+
+      <div class="pl-user-meta">
+        <h3 class="pl-user-name">{{ request.user.get_full_name|default:request.user.username }}</h3>
+        <div class="pl-user-handle">@{{ request.user.username }}</div>
+        <div class="pl-verified-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+          <span>Verified Member</span>
+        </div>
+      </div>
+
+      <div class="pl-user-quick-info">
+        <div class="pl-info-row" title="{{ request.user.email }}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <span class="pl-info-text">{{ request.user.email|default:"No email set" }}</span>
+        </div>
+        <div class="pl-info-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span class="pl-info-text">Joined {{ request.user.date_joined|date:"M Y" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="pl-sidebar-nav">
+      <div class="pl-nav-heading">Account Menu</div>
+      <ul class="pl-nav-list">
+        <li>
+          <a href="{% url 'dashboard' %}" class="pl-nav-item {% if active_tab == 'dashboard' %}is-active{% endif %}">
+            <span class="pl-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </span>
+            <span class="pl-nav-label">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'profile-ads' %}" class="pl-nav-item {% if active_tab == 'my-ads' %}is-active{% endif %}">
+            <span class="pl-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </span>
+            <span class="pl-nav-label">My Classified Ads</span>
+            {% if total_ads is not None %}
+              <span class="pl-nav-badge">{{ total_ads }}</span>
+            {% endif %}
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'profile-call-requests' %}" class="pl-nav-item {% if active_tab == 'call-requests' %}is-active{% endif %}">
+            <span class="pl-nav-icon" style="color: #059669;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </span>
+            <span class="pl-nav-label">Call Requests</span>
+            {% if unread_calls_count %}
+              <span class="pl-nav-badge" style="background: #10b981; color: #ffffff;">{{ unread_calls_count }}</span>
+            {% endif %}
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'wishlist' %}" class="pl-nav-item {% if active_tab == 'wishlist' %}is-active{% endif %}">
+            <span class="pl-nav-icon pl-icon-heart">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </span>
+            <span class="pl-nav-label">Saved Wishlist</span>
+            <span class="pl-nav-badge pl-badge-wishlist">{{ wishlist_count|default:"0" }}</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'profile-settings' %}" class="pl-nav-item {% if active_tab == 'settings' %}is-active{% endif %}">
+            <span class="pl-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </span>
+            <span class="pl-nav-label">Profile Settings</span>
+          </a>
+        </li>
+        <li class="pl-nav-divider"></li>
+        <li>
+          <a href="{% url 'logout' %}" class="pl-nav-item pl-nav-logout">
+            <span class="pl-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </span>
+            <span class="pl-nav-label">Sign Out</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Post Ad Action -->
+    <div class="pl-sidebar-action">
+      <a href="{% url 'post-ads' %}" class="pl-btn-post-sidebar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Post New Ad</span>
+      </a>
+    </div>
+  </aside>
+</div>
+
+<style>
+  /* PreLoved Account Sidebar Modern Styling */
+  .pl-account-sidebar-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+    position: sticky;
+    top: 90px;
+    margin-bottom: 30px;
+  }
+  .pl-sidebar-user-header {
+    padding: 24px 20px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .pl-avatar-wrapper {
+    position: relative;
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 12px;
+  }
+  .pl-sidebar-avatar {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0e7ff;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+    background: #ffffff;
+  }
+  .pl-avatar-placeholder {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+    border: 3px solid #e0e7ff;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  }
+  .pl-online-indicator {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 14px;
+    height: 14px;
+    background: #10b981;
+    border: 2.5px solid #ffffff;
+    border-radius: 50%;
+  }
+  .pl-user-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+  }
+  .pl-user-handle {
+    font-size: 12.5px;
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .pl-verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #059669;
+    margin-bottom: 14px;
+  }
+  .pl-user-quick-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+    padding-top: 12px;
+    border-top: 1px dashed #e2e8f0;
+  }
+  .pl-info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #64748b;
+    overflow: hidden;
+  }
+  .pl-info-row svg {
+    flex-shrink: 0;
+    color: #94a3b8;
+  }
+  .pl-info-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Nav Links */
+  .pl-sidebar-nav {
+    padding: 16px 14px 12px;
+  }
+  .pl-nav-heading {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    padding: 0 10px 8px;
+  }
+  .pl-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pl-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #334155;
+    text-decoration: none !important;
+    transition: all 0.18s ease;
+    position: relative;
+  }
+  .pl-nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    transition: color 0.18s ease;
+  }
+  .pl-nav-label {
+    flex: 1;
+  }
+  .pl-nav-item:hover {
+    background: #f8fafc;
+    color: #4f46e5;
+  }
+  .pl-nav-item:hover .pl-nav-icon {
+    color: #4f46e5;
+  }
+  .pl-nav-item.is-active {
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: 700;
+  }
+  .pl-nav-item.is-active .pl-nav-icon {
+    color: #4f46e5;
+  }
+  .pl-nav-item.is-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 3.5px;
+    background: #4f46e5;
+    border-radius: 0 4px 4px 0;
+  }
+  .pl-nav-badge {
+    padding: 2px 8px;
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 9999px;
+    line-height: 1.4;
+  }
+  .pl-nav-item.is-active .pl-nav-badge {
+    background: #c7d2fe;
+    color: #3730a3;
+  }
+  .pl-badge-wishlist {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  .pl-icon-heart {
+    color: #ef4444 !important;
+  }
+  .pl-nav-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 8px 10px;
+  }
+  .pl-nav-logout:hover {
+    background: #fef2f2;
+    color: #dc2626;
+  }
+  .pl-nav-logout:hover .pl-nav-icon {
+    color: #dc2626;
+  }
+
+  /* Post Ad Button */
+  .pl-sidebar-action {
+    padding: 0 14px 18px;
+  }
+  .pl-btn-post-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 16px;
+    background: #4f46e5;
+    color: #ffffff !important;
+    font-size: 13.5px;
+    font-weight: 700;
+    border-radius: 12px;
+    text-decoration: none !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    transition: all 0.2s ease;
+  }
+  .pl-btn-post-sidebar:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+  }
+</style>

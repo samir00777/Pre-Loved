@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+<style>
+  /* Header Page Title */
+  .pl-listing-header {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+    padding: 120px 0 45px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-listing-header .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    color: #cbd5e1;
+    margin-bottom: 10px;
+  }
+  .pl-listing-header h1 {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+  .pl-listing-header p {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0;
+  }
+
+  /* Main Container Section */
+  .pl-listing-section {
+    padding-bottom: 60px;
+  }
+
+  /* Modern Product Card (Compatible with PreLoved UI) */
+  .pl-list-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+  }
+  .pl-list-card:hover {
+    transform: translateY(-3px);
+    border-color: #cbd5e1;
+    box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.1);
+  }
+  .pl-list-card:hover .pl-card-title a {
+    color: #4f46e5;
+  }
+  .pl-list-card:hover .pl-list-thumb {
+    transform: scale(1.05);
+  }
+
+  /* Photo Thumbnail Area (Entire Area Clickable) */
+  .pl-list-thumb-wrap {
+    position: relative;
+    width: 260px;
+    min-width: 260px;
+    height: 195px;
+    background: #f1f5f9;
+    overflow: hidden;
+    display: block;
+    cursor: pointer;
+  }
+  .pl-list-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.35s ease;
+    display: block;
+  }
+  .pl-card-badge-featured {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+  }
+
+  /* Product Body (Entire Area Clickable) */
+  .pl-list-body {
+    padding: 16px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .pl-cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+    text-decoration: none !important;
+    width: fit-content;
+    transition: all 0.2s;
+  }
+  .pl-cat-badge:hover {
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+  .pl-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 8px 0 4px;
+    line-height: 1.35;
+  }
+  .pl-card-title a {
+    color: #0f172a;
+    text-decoration: none !important;
+    transition: color 0.15s ease;
+  }
+  .pl-card-date {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+  .pl-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 8px;
+  }
+  .pl-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .pl-cond-badge {
+    background: #f1f5f9;
+    color: #334155;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .pl-bottom-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pl-card-price {
+    font-size: 21px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+  }
+  .pl-verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .pl-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #4f46e5;
+    color: #ffffff !important;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: background 0.2s;
+  }
+  .pl-list-card:hover .pl-view-btn {
+    background: #4338ca;
+  }
+
+  /* Responsive Stacking for Small Devices */
+  @media (max-width: 767px) {
+    .pl-list-card {
+      flex-direction: column;
+    }
+    .pl-list-thumb-wrap {
+      width: 100%;
+      min-width: 100%;
+      height: 220px;
+    }
+  }
+
+  /* Top Bar Info */
+  .pl-listing-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #64748b;
+  }
+  .pl-listing-topbar strong {
+    color: #0f172a;
+  }
+
+  /* Pagination Bar */
+  .pl-pagination-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 35px;
+    margin-bottom: 25px;
+  }
+  .pl-pagination-info {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+  }
+  .pl-pagination-list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pl-page-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+  }
+  .pl-page-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #4f46e5;
+  }
+  .pl-page-btn.active {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+  }
+  .pl-page-btn.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: not-allowed;
+    background: #f1f5f9;
+  }
+  .pl-page-dots {
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    pointer-events: none;
+  }
+</style>
+
+<!-- Page Header Start -->
+<div class="pl-listing-header">
+  <div class="container text-center">
+    <div class="pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+      <span>Marketplace Catalog</span>
+    </div>
+    <h1>Browse All Ads</h1>
+    <p>Discover thousands of verified pre-loved products across all categories & locations</p>
+  </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Main container Start -->
+<div class="main-container pl-listing-section">
+  <div class="container">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <div class="col-lg-4 col-md-12 col-xs-12 page-sidebar">
+        <aside>
+          <!-- Search Widget -->
+          <div class="widget_search mb-4">
+            <form method="GET" action="{% url 'ads-search' %}" role="search" id="sidebar-search-form" style="position: relative;">
+              <input type="search" class="form-control" autocomplete="off" name="customword" placeholder="Search ads..." id="sidebar-search-input" value="" style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 10px 42px 10px 14px; font-size: 14px;">
+              <button type="submit" id="sidebar-search-submit" class="search-btn" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #4f46e5; cursor: pointer; font-size: 16px;">
+                <i class="lni-search" style="pointer-events: none;"></i>
+              </button>
+            </form>
+          </div>
+
+          <!-- Categories Widget -->
+          <div class="widget categories p-4 bg-white border border-slate-200" style="border-radius: 14px; margin-bottom: 24px;">
+            <h4 class="widget-title font-weight-bold mb-3" style="font-size: 16px; color: #0f172a;">Browse Categories</h4>
+            <ul class="categories-list" style="list-style: none; padding: 0; margin: 0;">
+              {% for category in category_listing %}
+              <li style="margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <a href="{% url 'category-archive' category.slug %}" style="font-weight: 600; color: #334155; text-decoration: none;">
+                    <i class="lni-folder mr-1 text-primary"></i> {{ category.category_name }}
+                  </a>
+                  <span class="badge badge-light text-muted font-weight-normal">({{ category.total_ads }})</span>
+                </div>
+                {% if category.subcategories.all %}
+                <ul style="list-style: none; padding-left: 18px; margin: 4px 0 8px 0; border-left: 2px solid #e2e8f0;">
+                  {% for sub in category.subcategories.all %}
+                  <li style="padding: 2px 0;">
+                    <a href="{% url 'category-archive' sub.slug %}" style="font-size: 13px; color: #64748b; text-decoration: none;">
+                      {{ sub.category_name }}
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- Advertisement Banner -->
+          <div class="widget mb-4">
+            <h4 class="widget-title font-weight-bold mb-3" style="font-size: 15px; color: #0f172a;">Sponsored</h4>
+            <div class="add-box rounded-xl overflow-hidden shadow-sm" style="border-radius: 12px; overflow: hidden;">
+              <img class="img-fluid" src="{% static 'img/img1.jpg' %}" alt="PreLoved Ads" style="width: 100%; display: block;">
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Main Content / Ads List -->
+      <div class="col-lg-8 col-md-12 col-xs-12 page-content">
+
+        <!-- Top summary bar -->
+        <div class="pl-listing-topbar">
+          <div>
+            Showing <strong>{{ ads_listing.start_index }}–{{ ads_listing.end_index }}</strong> of <strong>{{ total_ads_count }}</strong> verified ads
+          </div>
+          <div>
+            Page <strong>{{ ads_listing.number }}</strong> of <strong>{{ paginator.num_pages }}</strong>
+          </div>
+        </div>
+
+        <!-- Adds List -->
+        <div class="adds-wrapper">
+          {% for ad_listing in ads_listing %}
+          <!-- Entire Card is clickable and opens ad detail page -->
+          <div class="pl-list-card" onclick="window.location.href='{% url 'ads-detail' ad_listing.id %}';" title="View Ad: {{ ad_listing.title }}">
+            
+            <!-- Photo Thumbnail Area (Clicking anywhere opens ad page) -->
+            <div class="pl-list-thumb-wrap">
+              <a href="{% url 'ads-detail' ad_listing.id %}" style="display: block; width: 100%; height: 100%;">
+                {% with img=ad_listing.adsimages_set.first %}
+                {% if img and img.image %}
+                  <img class="pl-list-thumb" src="{{ img.image.url }}" alt="{{ ad_listing.title }}" loading="lazy">
+                {% else %}
+                  <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="background: #f1f5f9;">
+                    <i class="lni-image" style="font-size: 36px; color: #cbd5e1;"></i>
+                  </div>
+                {% endif %}
+                {% endwith %}
+              </a>
+
+              <!-- Wishlist Toggle Button (Stops propagation to avoid opening ad) -->
+              <button type="button" class="pl-wishlist-toggle-btn {% if ad_listing.id in user_wishlist_ids %}active{% endif %}" data-ad-id="{{ ad_listing.id }}" onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist({{ ad_listing.id }}, this);" title="Save to Wishlist" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if ad_listing.id in user_wishlist_ids %}#ef4444{% else %}none{% endif %}" stroke="{% if ad_listing.id in user_wishlist_ids %}#ef4444{% else %}currentColor{% endif %}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
+
+              {% if ad_listing.is_featured %}
+              <div class="pl-card-badge-featured">
+                <i class="lni-star-filled"></i> Featured
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Product Body (Clicking anywhere opens ad page) -->
+            <div class="pl-list-body">
+              <div>
+                <!-- Category Badge (Clicking goes to Category Archive) -->
+                <a href="{% url 'category-archive' ad_listing.category.slug %}" class="pl-cat-badge" onclick="event.stopPropagation();" title="Browse category: {{ ad_listing.category.category_name }}">
+                  <i class="lni-folder"></i>
+                  <span>{{ ad_listing.category.parent.category_name|default:ad_listing.category.category_name }} &gt; {{ ad_listing.category.category_name }}</span>
+                </a>
+
+                <!-- Title -->
+                <h3 class="pl-card-title">
+                  <a href="{% url 'ads-detail' ad_listing.id %}">
+                    {{ ad_listing.title }}
+                  </a>
+                </h3>
+
+                <!-- Date Created -->
+                <div class="pl-card-date">
+                  Created {{ ad_listing.date_created|date:"M. d, Y, g:i a" }}
+                </div>
+
+                <!-- Meta Row -->
+                <div class="pl-meta-row">
+                  <span class="pl-meta-item" title="Location">
+                    <i class="lni-map-marker text-danger"></i>
+                    <span>{{ ad_listing.city|default:ad_listing.state }}, {{ ad_listing.state }}</span>
+                  </span>
+                  <span class="pl-meta-item" title="Posted Date">
+                    <i class="lni-alarm-clock text-primary"></i>
+                    <span>{{ ad_listing.date_created|date:"M. d, Y" }}</span>
+                  </span>
+                  <span class="pl-meta-item" title="Seller">
+                    <i class="lni-user text-secondary"></i>
+                    <span>{{ ad_listing.seller_name|default:ad_listing.author.user.username }}</span>
+                  </span>
+                  <span class="pl-cond-badge">
+                    <i class="lni-package"></i> {{ ad_listing.condition|default:"Like New" }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Bottom Strip: Price & Actions -->
+              <div class="pl-bottom-strip">
+                <div class="pl-card-price">
+                  ₹{{ ad_listing.price|floatformat:0|intcomma }}
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="pl-verified-badge">
+                    <i class="lni-check-box"></i> Verified Ad
+                  </span>
+                  <span class="pl-view-btn">
+                    View Details &rarr;
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          {% empty %}
+          <div class="text-center py-5 bg-white rounded-xl border border-slate-200" style="border-radius: 16px;">
+            <i class="lni-empty-file text-muted" style="font-size: 48px; display: block; margin-bottom: 12px;"></i>
+            <h4 class="font-weight-bold text-dark mb-2">No Ads Found</h4>
+            <p class="text-muted mb-4">There are currently no active ads listed in this section.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary px-4 py-2" style="background: #4f46e5; border-color: #4f46e5; border-radius: 10px;">
+              Back to Home
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination Bar (12 products per page) -->
+        {% if paginator.num_pages > 1 %}
+        <div class="pl-pagination-wrap">
+          <div class="pl-pagination-info">
+            Showing <strong>{{ ads_listing.start_index }}–{{ ads_listing.end_index }}</strong> of <strong>{{ total_ads_count }}</strong> items (Page <strong>{{ ads_listing.number }}</strong> of <strong>{{ paginator.num_pages }}</strong>)
+          </div>
+
+          <ul class="pl-pagination-list">
+            <!-- First & Prev -->
+            {% if ads_listing.has_previous %}
+              <li><a href="?page=1" class="pl-page-btn" title="First Page">&laquo;&laquo;</a></li>
+              <li><a href="?page={{ ads_listing.previous_page_number }}" class="pl-page-btn" title="Previous Page">&laquo; Prev</a></li>
+            {% else %}
+              <li><span class="pl-page-btn disabled">&laquo;&laquo;</span></li>
+              <li><span class="pl-page-btn disabled">&laquo; Prev</span></li>
+            {% endif %}
+
+            <!-- Numbered Pages (Elided: e.g. 1 2 3 ... 38) -->
+            {% for p in elided_page_range %}
+              {% if p == ads_listing.number %}
+                <li><span class="pl-page-btn active">{{ p }}</span></li>
+              {% elif p == paginator.ELLIPSIS %}
+                <li><span class="pl-page-btn pl-page-dots">{{ p }}</span></li>
+              {% else %}
+                <li><a href="?page={{ p }}" class="pl-page-btn">{{ p }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            <!-- Next & Last -->
+            {% if ads_listing.has_next %}
+              <li><a href="?page={{ ads_listing.next_page_number }}" class="pl-page-btn" title="Next Page">Next &raquo;</a></li>
+              <li><a href="?page={{ paginator.num_pages }}" class="pl-page-btn" title="Last Page">&raquo;&raquo;</a></li>
+            {% else %}
+              <li><span class="pl-page-btn disabled">Next &raquo;</span></li>
+              <li><span class="pl-page-btn disabled">&raquo;&raquo;</span></li>
+            {% endif %}
+          </ul>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Main container End -->
+
+{% endblock content %}

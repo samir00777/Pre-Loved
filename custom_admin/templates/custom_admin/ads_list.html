@@ -1,0 +1,323 @@
+{% extends 'custom_admin/base.html' %}
+{% load humanize %}
+
+{% block title %}All Listings - PreLoved Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header & Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Listings Management</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Review, filter, feature, and moderate all marketplace products ({{ total_count }} total).</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <!-- Export Dropdown -->
+            <div class="relative inline-block text-left" id="exportMenuContainer">
+                <button type="button" onclick="document.getElementById('exportMenuDropdown').classList.toggle('hidden')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium shadow-sm transition-colors" title="Export listings to CSV">
+                    <i class="fa-solid fa-file-arrow-down text-xs"></i>
+                    <span>Export CSV</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-80"></i>
+                </button>
+                <div id="exportMenuDropdown" class="hidden absolute right-0 mt-2 w-64 rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800 py-1.5 z-50">
+                    <div class="px-3 py-1.5 border-b border-slate-100 dark:border-slate-700/60 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Export Options
+                    </div>
+                    <a href="{% url 'custom_admin:export' %}?type=ads&scope=filtered&q={{ current_query }}&category={{ current_cat }}&status={{ current_status }}&user={{ current_user }}" class="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-slate-700 transition-colors">
+                        <i class="fa-solid fa-filter text-emerald-600 w-4 text-center"></i>
+                        <span>Filtered Results ({{ total_count }} ads)</span>
+                    </a>
+                    <a href="{% url 'custom_admin:export' %}?type=ads&scope=all" class="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-slate-700 transition-colors">
+                        <i class="fa-solid fa-boxes-stacked text-indigo-600 w-4 text-center"></i>
+                        <span>All Platform Listings ({{ total_ads_count }})</span>
+                    </a>
+                    <a href="{% url 'custom_admin:export' %}?type=inventory" class="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-slate-700 transition-colors">
+                        <i class="fa-solid fa-chart-pie text-amber-600 w-4 text-center"></i>
+                        <span>Inventory & Valuation Report</span>
+                    </a>
+                </div>
+            </div>
+
+            <a href="/post-ads/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm transition-colors">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span>Post New Ad</span>
+            </a>
+            <a href="/admin/ads/" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium transition-colors" title="Reset Filters">
+                <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                <span>Reset</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <form method="GET" action="/admin/ads/" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <!-- Search Query -->
+            <div class="lg:col-span-2 relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input type="text" name="q" value="{{ current_query }}" placeholder="Search title, brand, seller, city..."
+                    class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-sm text-slate-900 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white"/>
+            </div>
+
+            <!-- Category Filter -->
+            <div>
+                <select name="category" onchange="this.form.submit()"
+                    class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 px-3 text-sm text-slate-900 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <optgroup label="{{ cat.category_name }}">
+                            <option value="{{ cat.id }}" {% if current_cat == cat.id|stringformat:"s" %}selected{% endif %}>All {{ cat.category_name }}</option>
+                            {% for sub in cat.subcategories.all %}
+                                <option value="{{ sub.id }}" {% if current_cat == sub.id|stringformat:"s" %}selected{% endif %}>&nbsp;&nbsp;↳ {{ sub.category_name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Status Filter -->
+            <div>
+                <select name="status" onchange="this.form.submit()"
+                    class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 px-3 text-sm text-slate-900 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                    <option value="">All Statuses</option>
+                    <option value="active" {% if current_status == 'active' %}selected{% endif %}>Active Only</option>
+                    <option value="inactive" {% if current_status == 'inactive' %}selected{% endif %}>Inactive Only</option>
+                    <option value="featured" {% if current_status == 'featured' %}selected{% endif %}>Featured Only</option>
+                </select>
+            </div>
+
+            <!-- Sort By -->
+            <div>
+                <select name="sort" onchange="this.form.submit()"
+                    class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 px-3 text-sm text-slate-900 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                    <option value="-id" {% if current_sort == '-id' %}selected{% endif %}>Newest First</option>
+                    <option value="id" {% if current_sort == 'id' %}selected{% endif %}>Oldest First</option>
+                    <option value="-price" {% if current_sort == '-price' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="price" {% if current_sort == 'price' %}selected{% endif %}>Price: Low to High</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <!-- Active User / Seller Filter Banner -->
+    {% if filtered_user %}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-xl bg-indigo-50 border border-indigo-100 dark:bg-indigo-950/40 dark:border-indigo-900/60 text-sm shadow-xs">
+        <div class="flex items-center gap-3 text-indigo-950 dark:text-indigo-200">
+            <div class="h-8 w-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <i class="fa-solid fa-user-check text-xs"></i>
+            </div>
+            <div>
+                <span class="font-bold text-slate-900 dark:text-white">Showing listings posted by seller:</span>
+                <span class="font-extrabold text-indigo-700 dark:text-indigo-400">{{ filtered_user.username }}</span>
+                {% if filtered_user.get_full_name %}<span class="text-xs text-slate-500">({{ filtered_user.get_full_name }})</span>{% endif %}
+                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300">{{ total_count }} ads found</span>
+            </div>
+        </div>
+        <a href="/admin/ads/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-xs transition-colors self-start sm:self-auto">
+            <i class="fa-solid fa-xmark text-slate-400"></i>
+            <span>Clear Seller Filter</span>
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Listings Table Card -->
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-800">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:bg-slate-900/60 dark:text-slate-400 dark:border-slate-700">
+                    <tr>
+                        <th scope="col" class="py-3 px-4 w-12 text-center">#</th>
+                        <th scope="col" class="py-3 px-4 min-w-[280px]">Product / Listing</th>
+                        <th scope="col" class="py-3 px-4 min-w-[140px]">Category</th>
+                        <th scope="col" class="py-3 px-4 min-w-[120px]">Price</th>
+                        <th scope="col" class="py-3 px-4 min-w-[160px]">Seller & Location</th>
+                        <th scope="col" class="py-3 px-4 min-w-[110px] text-center">Status</th>
+                        <th scope="col" class="py-3 px-4 min-w-[140px] text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 font-normal">
+                    {% for ad in page_obj %}
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-750 transition-colors">
+                        <!-- ID -->
+                        <td class="py-3.5 px-4 text-center font-mono text-xs text-slate-400 dark:text-slate-500">
+                            {{ ad.id }}
+                        </td>
+
+                        <!-- Product info & thumb -->
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600">
+                                    {% with img=ad.adsimages_set.first %}
+                                        {% if img and img.image %}
+                                            <img src="{{ img.image.url }}" alt="{{ ad.title }}" class="h-full w-full object-cover"/>
+                                        {% else %}
+                                            <div class="h-full w-full flex items-center justify-center text-slate-400">
+                                                <i class="fa-regular fa-image text-lg"></i>
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <a href="/admin/ads/{{ ad.id }}/" class="block font-medium text-slate-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400 truncate max-w-xs sm:max-w-md">
+                                        {{ ad.title }}
+                                    </a>
+                                    <div class="flex items-center gap-2 mt-0.5 text-xs text-slate-400">
+                                        {% if ad.brand %}
+                                            <span>{{ ad.brand }}</span>
+                                            <span>•</span>
+                                        {% endif %}
+                                        <span>{{ ad.date_created|date:"M d, Y" }}</span>
+                                        {% if ad.is_featured %}
+                                            <span class="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.2 text-[10px] font-semibold text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
+                                                <i class="fa-solid fa-star text-[9px]"></i> Featured
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Category -->
+                        <td class="py-3.5 px-4">
+                            <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                                {{ ad.category.category_name }}
+                            </span>
+                            {% if ad.category.parent %}
+                                <div class="text-[11px] text-slate-400 mt-0.5 pl-1">
+                                    in {{ ad.category.parent.category_name }}
+                                </div>
+                            {% endif %}
+                        </td>
+
+                        <!-- Price -->
+                        <td class="py-3.5 px-4">
+                            <div class="font-semibold text-slate-900 dark:text-white">
+                                ₹{{ ad.price|floatformat:0|intcomma }}
+                            </div>
+                            <div class="text-[11px] text-slate-400">
+                                {{ ad.condition|default:"Used"|title }}
+                            </div>
+                        </td>
+
+                        <!-- Seller & Location -->
+                        <td class="py-3.5 px-4">
+                            <div class="font-medium text-slate-800 dark:text-slate-200 truncate">
+                                {{ ad.seller_name|default:ad.author.user.username|default:"Verified Seller" }}
+                            </div>
+                            <div class="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                                <i class="fa-solid fa-location-dot text-[10px]"></i>
+                                <span>{{ ad.city.city_name|default:"Gujarat" }}{% if ad.state %}, {{ ad.state.state_name }}{% endif %}</span>
+                            </div>
+                        </td>
+
+                        <!-- Status badge -->
+                        <td class="py-3.5 px-4 text-center">
+                            {% if ad.is_active %}
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    Active
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                    Inactive
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="py-3.5 px-4 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <!-- View Details -->
+                                <a href="/admin/ads/{{ ad.id }}/" class="p-1.5 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Inspect Listing">
+                                    <i class="fa-regular fa-eye text-sm"></i>
+                                </a>
+
+                                <!-- Public link -->
+                                <a href="/ads/{{ ad.id }}/" target="_blank" class="p-1.5 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Open Public Page">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </a>
+
+                                <!-- Toggle Active Status -->
+                                <form action="/admin/ads/{{ ad.id }}/toggle-active/" method="POST" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="p-1.5 {% if ad.is_active %}text-emerald-600 hover:text-amber-600{% else %}text-slate-400 hover:text-emerald-600{% endif %} rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="{% if ad.is_active %}Deactivate{% else %}Activate{% endif %}">
+                                        <i class="fa-solid {% if ad.is_active %}fa-toggle-on{% else %}fa-toggle-off{% endif %} text-base"></i>
+                                    </button>
+                                </form>
+
+                                <!-- Toggle Featured Status -->
+                                <form action="/admin/ads/{{ ad.id }}/toggle-featured/" method="POST" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="p-1.5 {% if ad.is_featured %}text-amber-500 hover:text-slate-400{% else %}text-slate-400 hover:text-amber-500{% endif %} rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="{% if ad.is_featured %}Remove Featured{% else %}Mark Featured{% endif %}">
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                    </button>
+                                </form>
+
+                                <!-- Delete button with confirm -->
+                                <form action="/admin/ads/{{ ad.id }}/delete/" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete ad #{{ ad.id }} ({{ ad.title|escapejs }})? This action cannot be undone.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Delete Listing">
+                                        <i class="fa-regular fa-trash-can text-sm"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="py-12 text-center text-slate-400 dark:text-slate-500">
+                            <i class="fa-solid fa-boxes-stacked text-3xl mb-3 block"></i>
+                            <p class="font-medium text-slate-600 dark:text-slate-300">No listings found matching your criteria</p>
+                            <p class="text-xs text-slate-400 mt-1">Try resetting the filters or searching for something else.</p>
+                            <a href="/admin/ads/" class="mt-3 inline-block text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Clear all filters</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        {% if page_obj.has_other_pages %}
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40">
+            <div class="text-xs text-slate-500 dark:text-slate-400">
+                Showing <span class="font-semibold text-slate-700 dark:text-slate-200">{{ page_obj.start_index }}</span> to <span class="font-semibold text-slate-700 dark:text-slate-200">{{ page_obj.end_index }}</span> of <span class="font-semibold text-slate-700 dark:text-slate-200">{{ total_count }}</span> listings
+            </div>
+
+            <div class="flex items-center gap-1">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if current_query %}&q={{ current_query }}{% endif %}{% if current_cat %}&category={{ current_cat }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
+                        class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <i class="fa-solid fa-chevron-left mr-1 text-[10px]"></i> Prev
+                    </a>
+                {% endif %}
+
+                <span class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if current_query %}&q={{ current_query }}{% endif %}{% if current_cat %}&category={{ current_cat }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
+                        class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        Next <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('click', function(e) {
+        var container = document.getElementById('exportMenuContainer');
+        var dropdown = document.getElementById('exportMenuDropdown');
+        if (container && dropdown && !container.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+</script>
+{% endblock %}

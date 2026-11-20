@@ -1,0 +1,244 @@
+{% extends 'custom_admin/base.html' %}
+{% load humanize %}
+
+{% block title %}Analytics & Reports - PreLoved Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Platform Analytics & Intelligence</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Comprehensive breakdown of listing velocity, category saturation, and geographic distribution.</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <i class="fa-solid fa-calendar text-indigo-500"></i>
+                <span>Last 12 Months</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Overview KPI Metrics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 transition-all hover:shadow-lg hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Listings</span>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xl shadow-xs">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+            </div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">{{ total_ads_count }}</div>
+            <div class="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-400 font-bold mt-2">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+                <span>100% active catalog</span>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 transition-all hover:shadow-lg hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Featured Listings</span>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 text-xl shadow-xs">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+            </div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">{{ inventory.featured_items|default:inventory.featured|default:"0" }}</div>
+            <div class="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-2">Premium boosted ads</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 transition-all hover:shadow-lg hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">RC Verified Units</span>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-xl shadow-xs">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+            </div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">{{ inventory.verified_rc_items|default:inventory.rc_verified|default:"0" }}</div>
+            <div class="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-2">Verified vehicle records</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 transition-all hover:shadow-lg hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Top Market Hub</span>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 text-xl shadow-xs">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+            </div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">Ahmedabad</div>
+            <div class="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-2">Leading regional volume</div>
+        </div>
+    </div>
+
+    <!-- Monthly Velocity Chart (ApexCharts) -->
+    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <div>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Monthly Inventory & Value Trajectory</h3>
+                <p class="text-xs text-slate-400">Listings created per month and cumulative valuation (₹ Crores)</p>
+            </div>
+            <div class="flex items-center gap-4 text-xs font-medium">
+                <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-indigo-600"></span>
+                    <span class="text-slate-600 dark:text-slate-300">Listing Count</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-emerald-500"></span>
+                    <span class="text-slate-600 dark:text-slate-300">Market Value (₹ Cr)</span>
+                </div>
+            </div>
+        </div>
+        <div id="analytics-velocity-chart" class="h-80"></div>
+    </div>
+
+    <!-- Two Columns: Category & Regional Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-7">
+        <!-- Category Distribution -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+            <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-700">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-indigo-600 dark:text-indigo-400"></i>
+                        Category Share
+                    </h3>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5">Volume distribution across core marketplace partitions</p>
+                </div>
+                <span class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-bold">12 Categories</span>
+            </div>
+            
+            <div class="space-y-4 max-h-[440px] overflow-y-auto pr-2">
+                {% for cat in category_distribution %}
+                <div class="p-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-700/60 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
+                    <div class="flex items-center justify-between text-sm sm:text-base font-bold mb-2">
+                        <span class="text-slate-800 dark:text-slate-100">{{ cat.name }}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-900 dark:text-white font-extrabold">{{ cat.count }} ads</span>
+                            <span class="px-2 py-0.5 rounded-md text-xs sm:text-sm font-extrabold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/80 dark:text-indigo-200">{{ cat.percentage }}%</span>
+                        </div>
+                    </div>
+                    <div class="h-3.5 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                        <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 transition-all duration-500" style="width: {{ cat.percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Regional Distribution -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+            <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-700">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-emerald-600 dark:text-emerald-400"></i>
+                        Regional Market Penetration
+                    </h3>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5">Concentration of listings across key cities</p>
+                </div>
+                <span class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-bold">Top Hubs</span>
+            </div>
+
+            <div class="space-y-4 max-h-[440px] overflow-y-auto pr-2">
+                {% for reg in regional_distribution %}
+                <div class="p-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-700/60 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all">
+                    <div class="flex items-center justify-between text-sm sm:text-base font-bold mb-2">
+                        <span class="text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-emerald-500 text-xs"></i>
+                            <span>{{ reg.city }}</span>
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-900 dark:text-white font-extrabold">{{ reg.count }} ads</span>
+                            <span class="px-2 py-0.5 rounded-md text-xs sm:text-sm font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/90 dark:text-emerald-300">{{ reg.percentage }}%</span>
+                        </div>
+                    </div>
+                    <div class="h-3.5 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                        <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500" style="width: {{ reg.percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const chartData = {{ sales_chart_json|safe }};
+        const isDark = document.documentElement.classList.contains('dark');
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+        const gridColor = isDark ? '#334155' : '#f1f5f9';
+
+        const velocityOptions = {
+            series: [
+                {
+                    name: "Total Listings",
+                    type: "column",
+                    data: chartData.volume || chartData.listings_series || []
+                },
+                {
+                    name: "Valuation (₹ Cr)",
+                    type: "line",
+                    data: chartData.revenue_crores || []
+                }
+            ],
+            chart: {
+                height: 320,
+                type: "line",
+                toolbar: { show: false },
+                background: 'transparent'
+            },
+            colors: ["#4f46e5", "#10b981"],
+            stroke: {
+                width: [0, 3],
+                curve: 'smooth'
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: "40%",
+                    borderRadius: 4
+                }
+            },
+            dataLabels: { enabled: false },
+            xaxis: {
+                categories: chartData.categories || [],
+                labels: { style: { colors: textColor } },
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: [
+                {
+                    title: { text: "Listings Created", style: { color: textColor } },
+                    labels: { style: { colors: textColor } }
+                },
+                {
+                    opposite: true,
+                    title: { text: "Valuation (₹ Cr)", style: { color: textColor } },
+                    labels: { style: { colors: textColor } }
+                }
+            ],
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (y, { seriesIndex }) {
+                        if (typeof y !== "undefined") {
+                            if (seriesIndex === 0) {
+                                return y + " Listings";
+                            } else {
+                                return "₹ " + y + " Cr";
+                            }
+                        }
+                        return y;
+                    }
+                }
+            },
+            grid: { borderColor: gridColor, strokeDashArray: 4 },
+            legend: { show: false },
+            theme: { mode: isDark ? 'dark' : 'light' }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#analytics-velocity-chart"), velocityOptions);
+        chart.render();
+    });
+</script>
+{% endblock %}

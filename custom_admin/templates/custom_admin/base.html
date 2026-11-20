@@ -1,0 +1,255 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{% block title %}PreLoved NextAdmin - Dashboard{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#4f46e5',
+                            600: '#4338ca',
+                            700: '#3730a3',
+                        },
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b',
+                        darkborder: '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- ApexCharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+    <!-- Dark Mode Init Script -->
+    <script>
+        if (localStorage.getItem('admin_theme') === 'dark' || (!('admin_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased">
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white border-r border-slate-200 dark:bg-slate-800 dark:border-slate-700 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 -translate-x-full">
+            <!-- Brand Logo -->
+            <div class="flex h-16 shrink-0 items-center justify-between px-6 border-b border-slate-200 dark:border-slate-700">
+                <a href="/admin/" class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1 shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <img src="{% static 'images/site-logo.png' %}" alt="PreLoved" class="h-full w-full object-contain">
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">PreLoved</span>
+                        <span class="ml-1 text-xs font-semibold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">ADMIN</span>
+                    </div>
+                </a>
+                <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex-1 overflow-y-auto px-4 py-4 space-y-6">
+                <!-- Group 1: Core -->
+                <div>
+                    <p class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Menu</p>
+                    <nav class="mt-2 space-y-1">
+                        <a href="/admin/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {% if active_tab == 'dashboard' %}bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 font-semibold{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700/50 dark:hover:text-white{% endif %}">
+                            <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <a href="/admin/ads/" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {% if active_tab == 'ads' %}bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 font-semibold{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700/50 dark:hover:text-white{% endif %}">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-boxes-stacked w-5 text-center"></i>
+                                <span>All Listings</span>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 font-semibold">{{ total_ads_count }}</span>
+                        </a>
+
+                        <a href="/admin/categories/" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {% if active_tab == 'categories' %}bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 font-semibold{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700/50 dark:hover:text-white{% endif %}">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-layer-group w-5 text-center"></i>
+                                <span>Categories</span>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 font-semibold">76</span>
+                        </a>
+
+                        <a href="/admin/users/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {% if active_tab == 'users' %}bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 font-semibold{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700/50 dark:hover:text-white{% endif %}">
+                            <i class="fa-solid fa-users w-5 text-center"></i>
+                            <span>Sellers & Users</span>
+                        </a>
+
+                        <a href="/admin/analytics/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {% if active_tab == 'analytics' %}bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 font-semibold{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700/50 dark:hover:text-white{% endif %}">
+                            <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                            <span>Analytics & Reports</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Group 2: Quick Actions -->
+                <div>
+                    <p class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Quick Actions</p>
+                    <nav class="mt-2 space-y-1">
+                        <a href="/post-ads/" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/40 transition-colors">
+                            <i class="fa-solid fa-circle-plus w-5 text-center"></i>
+                            <span>Post New Ad</span>
+                        </a>
+                        <a href="{% url 'custom_admin:export' %}?type=ads&scope=all" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/40 transition-colors" title="Download all marketplace data as CSV">
+                            <i class="fa-solid fa-file-csv w-5 text-center"></i>
+                            <span>Export Listings (CSV)</span>
+                        </a>
+                        <a href="/" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50 transition-colors">
+                            <i class="fa-solid fa-arrow-up-right-from-square w-5 text-center"></i>
+                            <span>View Public Site</span>
+                        </a>
+                        <a href="/django-admin/" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50 transition-colors">
+                            <i class="fa-solid fa-database w-5 text-center"></i>
+                            <span>Django Native Admin</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Sidebar User Profile Footer -->
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                    <div class="h-9 w-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
+                        {{ admin_user.name|slice:":1"|upper }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-900 dark:text-white truncate">{{ admin_user.name }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ admin_user.role }}</p>
+                    </div>
+                    <a href="/admin/logout/" class="text-slate-400 hover:text-red-500 transition-colors p-1" title="Sign out of Admin">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Backdrop for mobile -->
+        <div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden hidden"></div>
+
+        <!-- MAIN CONTENT WRAPPER -->
+        <div class="flex flex-1 flex-col overflow-hidden">
+            <!-- TOP HEADER -->
+            <header class="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 lg:px-8 dark:border-slate-700 dark:bg-slate-800">
+                <!-- Left: Mobile Toggle & Global Search -->
+                <div class="flex items-center gap-4 flex-1">
+                    <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-600 dark:text-slate-300 hover:text-slate-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <!-- Search Bar -->
+                    <form action="/admin/ads/" method="GET" class="relative w-full max-w-md hidden sm:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                        </span>
+                        <input type="text" name="q" placeholder="Search ads, sellers, brands, cities..." value="{{ current_query|default:'' }}"
+                            class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-4 text-sm text-slate-900 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-indigo-400 transition-all"/>
+                    </form>
+                </div>
+
+                <!-- Right: Notifications, Dark Mode Toggle & Admin Menu -->
+                <div class="flex items-center gap-3">
+                    <!-- Dark Mode Toggle Button -->
+                    <button onclick="toggleTheme()" class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors" title="Toggle theme">
+                        <i class="fa-solid fa-moon hidden dark:block text-sm text-amber-400"></i>
+                        <i class="fa-solid fa-sun block dark:hidden text-sm text-slate-600"></i>
+                    </button>
+
+                    <!-- Notifications Dropdown -->
+                    <div class="relative">
+                        <button class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors relative">
+                            <i class="fa-regular fa-bell text-sm"></i>
+                            <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">4</span>
+                        </button>
+                    </div>
+
+                    <!-- Admin User Badge -->
+                    <div class="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+                        <div class="h-8 w-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
+                            {{ admin_user.name|slice:":2"|upper }}
+                        </div>
+                        <div class="hidden md:block text-left">
+                            <span class="block text-xs font-semibold text-slate-800 dark:text-slate-100">{{ admin_user.name }}</span>
+                            <span class="block text-[10px] text-slate-400">{{ admin_user.role }}</span>
+                        </div>
+                        <a href="/admin/logout/" class="ml-1 text-slate-400 hover:text-red-500 text-xs p-1" title="Sign out">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT SCROLLABLE -->
+            <main class="flex-1 overflow-y-auto p-4 lg:p-8">
+                <!-- Alerts / Django Messages -->
+                {% if messages %}
+                    <div class="mb-6 space-y-2">
+                        {% for message in messages %}
+                            <div class="flex items-center gap-3 rounded-lg p-3 text-sm {% if message.tags == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800{% else %}bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800{% endif %}">
+                                <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %} text-base"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('admin_theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('admin_theme', 'dark');
+            }
+        }
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

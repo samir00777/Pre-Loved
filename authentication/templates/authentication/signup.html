@@ -1,0 +1,743 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* Page Background & Wrapper */
+  .pl-auth-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: calc(100vh - 80px);
+    padding: 130px 15px 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-auth-section::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .pl-auth-section::after {
+    content: '';
+    position: absolute;
+    bottom: -120px;
+    left: -120px;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Slider Container Box */
+  .pl-slider-box {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(226, 232, 240, 0.8);
+    position: relative;
+    overflow: hidden;
+    width: 900px;
+    max-width: 100%;
+    min-height: 590px;
+    z-index: 5;
+  }
+
+  /* Mobile Tabs Switcher */
+  .pl-mobile-tabs {
+    display: none;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+    margin: 20px 24px 0;
+    gap: 4px;
+  }
+  .pl-mobile-tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pl-mobile-tab-btn.active {
+    background: #ffffff;
+    color: #4f46e5;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  }
+
+  /* Form Panels (Absolute on Desktop) */
+  .pl-form-panel {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pl-sign-in-panel {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+  }
+  .pl-slider-box.right-panel-active .pl-sign-in-panel {
+    transform: translateX(100%);
+  }
+  .pl-sign-up-panel {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+  }
+  .pl-slider-box.right-panel-active .pl-sign-up-panel {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: plShow 0.6s;
+  }
+
+  @keyframes plShow {
+    0%, 49.99% {
+      opacity: 0;
+      z-index: 1;
+    }
+    50%, 100% {
+      opacity: 1;
+      z-index: 5;
+    }
+  }
+
+  /* Inner Form Styling */
+  .pl-auth-form {
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px 42px;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  .pl-form-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .pl-brand-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    font-size: 19px;
+    margin-bottom: 10px;
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.25);
+  }
+  .pl-form-title {
+    font-size: 23px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px 0;
+  }
+  .pl-form-sub {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* Inputs & Wrap */
+  .pl-input-group {
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .pl-input-group-signup {
+    margin-bottom: 11px;
+  }
+  .pl-input-wrap {
+    position: relative;
+    width: 100%;
+  }
+  .pl-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #94a3b8;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .pl-slider-box input.form-control,
+  .pl-slider-box input.pl-custom-input {
+    width: 100%;
+    height: 44px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    padding: 8px 14px 8px 40px;
+    font-size: 13.5px;
+    color: #0f172a;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+  .pl-slider-box input.form-control:focus,
+  .pl-slider-box input.pl-custom-input:focus {
+    background: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    outline: none;
+  }
+  .pl-pwd-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+  .pl-pwd-toggle:hover {
+    color: #4f46e5;
+  }
+
+  /* Form Helpers */
+  .pl-form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12.5px;
+    margin-bottom: 18px;
+  }
+  .pl-remember-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #64748b;
+    margin: 0;
+    user-select: none;
+  }
+  .pl-remember-check input {
+    accent-color: #4f46e5;
+    cursor: pointer;
+  }
+  .pl-link-forgot {
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: none !important;
+  }
+  .pl-link-forgot:hover {
+    text-decoration: underline !important;
+    color: #3730a3;
+  }
+  .pl-terms-caption {
+    font-size: 11px;
+    color: #94a3b8;
+    text-align: center;
+    margin: 4px 0 14px;
+    line-height: 1.4;
+  }
+  .pl-terms-caption a {
+    color: #4f46e5;
+    text-decoration: none !important;
+    font-weight: 600;
+  }
+
+  /* Primary Action Button */
+  .pl-btn-action {
+    width: 100%;
+    height: 46px;
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+  }
+  .pl-btn-action:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
+    color: #ffffff;
+  }
+  .pl-btn-action:active {
+    transform: scale(0.98);
+  }
+
+  /* Alert Toasts */
+  .pl-alert-toast {
+    background: #fef2f2;
+    border: 1px solid #fee2e2;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    color: #991b1b;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.35;
+  }
+  .pl-field-err {
+    font-size: 11px;
+    color: #dc2626;
+    margin-top: 3px;
+    padding-left: 4px;
+  }
+
+  /* Sliding Overlay Container */
+  .pl-overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+  }
+  .pl-slider-box.right-panel-active .pl-overlay-container {
+    transform: translateX(-100%);
+  }
+
+  /* Overlay Background & Palette */
+  .pl-overlay {
+    background: linear-gradient(135deg, #090d16 0%, #1e1b4b 35%, #3730a3 70%, #4f46e5 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    color: #ffffff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+  .pl-overlay::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .pl-overlay::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.3) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .pl-slider-box.right-panel-active .pl-overlay {
+    transform: translateX(50%);
+  }
+
+  /* Overlay Panels (Left & Right) */
+  .pl-overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 44px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+    box-sizing: border-box;
+    z-index: 2;
+  }
+  .pl-overlay-badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #f59e0b;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  .pl-overlay-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px 0;
+  }
+  .pl-overlay-desc {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #cbd5e1;
+    margin: 0 0 26px 0;
+    max-width: 320px;
+  }
+  .pl-btn-ghost {
+    border-radius: 24px;
+    border: 2px solid #ffffff;
+    background: transparent;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 36px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  }
+  .pl-btn-ghost:hover {
+    background: #ffffff;
+    color: #1e1b4b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+  .pl-btn-ghost:active {
+    transform: scale(0.96);
+  }
+
+  .pl-overlay-perks {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 26px;
+  }
+  .pl-overlay-perks span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .pl-overlay-perks i {
+    color: #10b981;
+  }
+
+  .pl-overlay-left {
+    transform: translateX(-20%);
+  }
+  .pl-slider-box.right-panel-active .pl-overlay-left {
+    transform: translateX(0);
+  }
+  .pl-overlay-right {
+    right: 0;
+    transform: translateX(0);
+  }
+  .pl-slider-box.right-panel-active .pl-overlay-right {
+    transform: translateX(20%);
+  }
+
+  /* Responsive Rules for Small Devices */
+  @media (max-width: 768px) {
+    .pl-slider-box {
+      min-height: auto;
+      border-radius: 20px;
+    }
+    .pl-overlay-container {
+      display: none !important;
+    }
+    .pl-mobile-tabs {
+      display: flex;
+    }
+    .pl-form-panel {
+      position: static;
+      width: 100% !important;
+      transform: none !important;
+      animation: none !important;
+      display: none;
+    }
+    .pl-slider-box:not(.right-panel-active) .pl-sign-in-panel {
+      display: flex;
+    }
+    .pl-slider-box.right-panel-active .pl-sign-up-panel {
+      display: flex;
+      opacity: 1;
+    }
+    .pl-auth-form {
+      padding: 24px 20px 32px;
+    }
+  }
+</style>
+
+<div class="pl-auth-section">
+  <!-- On signup page, default starts with right-panel-active -->
+  <div class="pl-slider-box right-panel-active" id="authSliderContainer">
+
+    <!-- Mobile Switcher (Visible only < 768px) -->
+    <div class="pl-mobile-tabs">
+      <button type="button" class="pl-mobile-tab-btn" id="tabMobileSignIn" onclick="setSliderPanel(false)">Sign In</button>
+      <button type="button" class="pl-mobile-tab-btn active" id="tabMobileSignUp" onclick="setSliderPanel(true)">Sign Up</button>
+    </div>
+
+    <!-- Sign Up Form Panel (4 compulsory fields) -->
+    <div class="pl-form-panel pl-sign-up-panel">
+      <form method="POST" action="{% url 'signup' %}" class="pl-auth-form" autocomplete="off">
+        {% csrf_token %}
+
+        <div class="pl-form-header">
+          <div class="pl-brand-pill">
+            <i class="lni-rocket"></i>
+          </div>
+          <h2 class="pl-form-title">Create Account</h2>
+          <p class="pl-form-sub">Join thousands of verified buyers &amp; sellers</p>
+        </div>
+
+        {% if reg_form.errors %}
+        <div class="pl-alert-toast">
+          <i class="lni-warning"></i>
+          <span>Please review the highlighted fields below.</span>
+        </div>
+        {% endif %}
+
+        <!-- Field 1: Choose Username -->
+        <div class="pl-input-group pl-input-group-signup">
+          <div class="pl-input-wrap">
+            <i class="lni-user pl-input-icon"></i>
+            {{ reg_form.username }}
+          </div>
+          {% if reg_form.username.errors %}
+            <div class="pl-field-err">{{ reg_form.username.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Field 2: Email Address -->
+        <div class="pl-input-group pl-input-group-signup">
+          <div class="pl-input-wrap">
+            <i class="lni-envelope pl-input-icon"></i>
+            {{ reg_form.email }}
+          </div>
+          {% if reg_form.email.errors %}
+            <div class="pl-field-err">{{ reg_form.email.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Field 3: Password -->
+        <div class="pl-input-group pl-input-group-signup">
+          <div class="pl-input-wrap">
+            <i class="lni-lock pl-input-icon"></i>
+            {{ reg_form.password1 }}
+            <button type="button" class="pl-pwd-toggle" onclick="togglePasswordVisibility('id_password1', this)" title="Show/Hide Password">
+              <i class="lni-eye"></i>
+            </button>
+          </div>
+          {% if reg_form.password1.errors %}
+            <div class="pl-field-err">{{ reg_form.password1.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Field 4: Confirm Password -->
+        <div class="pl-input-group pl-input-group-signup">
+          <div class="pl-input-wrap">
+            <i class="lni-lock pl-input-icon"></i>
+            {{ reg_form.password2 }}
+            <button type="button" class="pl-pwd-toggle" onclick="togglePasswordVisibility('id_password2', this)" title="Show/Hide Password">
+              <i class="lni-eye"></i>
+            </button>
+          </div>
+          {% if reg_form.password2.errors %}
+            <div class="pl-field-err">{{ reg_form.password2.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="pl-terms-caption">
+          By signing up, you agree to PreLoved's 
+          <a href="{% url 'terms-of-service' %}" target="_blank">Terms</a> &amp; 
+          <a href="{% url 'terms-of-service' %}" target="_blank">Privacy</a>.
+        </div>
+
+        <button type="submit" class="pl-btn-action">
+          <span>Create Free Account</span>
+          <i class="lni-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Sign In Form Panel (2 compulsory fields) -->
+    <div class="pl-form-panel pl-sign-in-panel">
+      <form method="POST" action="{% url 'login' %}" class="pl-auth-form" autocomplete="off">
+        {% csrf_token %}
+
+        <div class="pl-form-header">
+          <div class="pl-brand-pill">
+            <i class="lni-bolt"></i>
+          </div>
+          <h2 class="pl-form-title">Welcome Back</h2>
+          <p class="pl-form-sub">Sign in to manage your classifieds &amp; inquiries</p>
+        </div>
+
+        {% if messages %}
+          {% for message in messages %}
+          <div class="pl-alert-toast">
+            <i class="lni-warning"></i>
+            <span>{{ message }}</span>
+          </div>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Field 1: Username -->
+        <div class="pl-input-group">
+          <div class="pl-input-wrap">
+            <i class="lni-user pl-input-icon"></i>
+            <input type="text" name="username" class="pl-custom-input" placeholder="Username" required>
+          </div>
+        </div>
+
+        <!-- Field 2: Password -->
+        <div class="pl-input-group">
+          <div class="pl-input-wrap">
+            <i class="lni-lock pl-input-icon"></i>
+            <input type="password" id="signin_pwd" name="password" class="pl-custom-input" placeholder="Password" required style="padding-right: 42px;">
+            <button type="button" class="pl-pwd-toggle" onclick="togglePasswordVisibility('signin_pwd', this)" title="Show/Hide Password">
+              <i class="lni-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Options: Remember me & Forgot Password -->
+        <div class="pl-form-row">
+          <label class="pl-remember-check">
+            <input type="checkbox" name="remember" checked>
+            <span>Remember me</span>
+          </label>
+          <a href="{% url 'reset_password' %}" class="pl-link-forgot">Forgot Password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="pl-btn-action">
+          <span>Sign In</span>
+          <i class="lni-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Double Slider Overlay Container -->
+    <div class="pl-overlay-container">
+      <div class="pl-overlay">
+
+        <!-- Overlay Left (Visible when Sign Up is shown) -->
+        <div class="pl-overlay-panel pl-overlay-left">
+          <div class="pl-overlay-badge">
+            <i class="lni-user"></i>
+          </div>
+          <h1 class="pl-overlay-title">Welcome Back!</h1>
+          <p class="pl-overlay-desc">
+            To keep connected with your ads, buyers and messages, please login with your personal account.
+          </p>
+          <button type="button" class="pl-btn-ghost" id="signInBtn">Sign In</button>
+          <div class="pl-overlay-perks">
+            <span><i class="lni-shield"></i> Safe &amp; Secure</span>
+            <span><i class="lni-bolt"></i> Instant Access</span>
+          </div>
+        </div>
+
+        <!-- Overlay Right (Visible when Sign In is shown) -->
+        <div class="pl-overlay-panel pl-overlay-right">
+          <div class="pl-overlay-badge">
+            <i class="lni-star"></i>
+          </div>
+          <h1 class="pl-overlay-title">Hello, Friend!</h1>
+          <p class="pl-overlay-desc">
+            Enter your personal details to create your free account and start buying &amp; selling on PreLoved.
+          </p>
+          <button type="button" class="pl-btn-ghost" id="signUpBtn">Sign Up</button>
+          <div class="pl-overlay-perks">
+            <span><i class="lni-check-box"></i> Free Classifieds</span>
+            <span><i class="lni-phone"></i> Direct Contact</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('authSliderContainer');
+  const signUpBtn = document.getElementById('signUpBtn');
+  const signInBtn = document.getElementById('signInBtn');
+  const tabMobileSignIn = document.getElementById('tabMobileSignIn');
+  const tabMobileSignUp = document.getElementById('tabMobileSignUp');
+
+  function setSliderPanel(isSignUp) {
+    if (isSignUp) {
+      container.classList.add("right-panel-active");
+      if (tabMobileSignUp && tabMobileSignIn) {
+        tabMobileSignUp.classList.add("active");
+        tabMobileSignIn.classList.remove("active");
+      }
+    } else {
+      container.classList.remove("right-panel-active");
+      if (tabMobileSignUp && tabMobileSignIn) {
+        tabMobileSignIn.classList.add("active");
+        tabMobileSignUp.classList.remove("active");
+      }
+    }
+  }
+
+  if (signUpBtn) {
+    signUpBtn.addEventListener('click', () => setSliderPanel(true));
+  }
+  if (signInBtn) {
+    signInBtn.addEventListener('click', () => setSliderPanel(false));
+  }
+
+  // Password visibility toggle
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId) || document.querySelector(`input[name="${inputId}"]`);
+    if (!input) return;
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'lni-eye-crossed';
+    } else {
+      input.type = 'password';
+      icon.className = 'lni-eye';
+    }
+  }
+</script>
+{% endblock content %}

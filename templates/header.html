@@ -1,0 +1,1873 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>PreLoved - Second-Hand Goods Marketplace</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Icon -->
+    <link rel="stylesheet" type="text/css" href="{% static 'fonts/line-icons.css' %}">
+    <!-- Slicknav -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/slicknav.css' %}">
+    <!-- Nivo Lightbox -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nivo-lightbox.css' %}">
+    <!-- Animate -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+    <!-- Filepond CSS -->
+    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <!-- Responsive Style -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
+
+    <!-- Scoped Modern Navbar Styles -->
+    <style>
+      :root {
+        --pl-primary: #4f46e5;
+        --pl-primary-hover: #4338ca;
+        --pl-accent: #f59e0b;
+        --pl-text-dark: #0f172a;
+        --pl-text-muted: #64748b;
+        --pl-border: #e2e8f0;
+        --pl-bg-light: #f8fafc;
+        --pl-card-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+      }
+
+      /* Base adjustments */
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+
+      /* Widen container across site - cuts left and right blank space in half */
+      @media (min-width: 1200px) {
+        .container {
+          max-width: 1340px !important;
+        }
+      }
+      @media (min-width: 1400px) {
+        .container {
+          max-width: 1480px !important;
+        }
+      }
+      @media (min-width: 1600px) {
+        .container {
+          max-width: 1580px !important;
+        }
+      }
+      .slicknav_menu {
+        display: none !important;
+      }
+      .page-header {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%) !important;
+        padding-top: 140px !important;
+      }
+
+      /* ========================================================
+         Uniform Product Card Image Resolution & Equal Card Heights
+         ======================================================== */
+      .featured-box {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 14px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+        margin-bottom: 30px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: calc(100% - 30px) !important;
+        transition: all 0.25s ease !important;
+        float: none !important;
+      }
+      .featured-box:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.12) !important;
+        border-color: #cbd5e1 !important;
+      }
+      .featured-box figure {
+        margin: 0 !important;
+        width: 100% !important;
+        height: 230px !important;
+        max-height: 230px !important;
+        min-height: 230px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        background: #f1f5f9 !important;
+        flex-shrink: 0 !important;
+        float: none !important;
+      }
+      .featured-box figure a {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .featured-box figure img {
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 230px !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        display: block !important;
+        transition: transform 0.35s ease !important;
+      }
+      .featured-box:hover figure img {
+        transform: scale(1.05) !important;
+      }
+      .featured-box .feature-content {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-grow: 1 !important;
+        padding: 18px 20px 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        float: none !important;
+      }
+      .featured-box .feature-content h4 {
+        font-size: 14.5px !important;
+        font-weight: 700 !important;
+        line-height: 1.35 !important;
+        text-transform: uppercase !important;
+        margin-bottom: 6px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        height: 40px !important;
+      }
+      .featured-box .feature-content h4 a {
+        color: #0f172a !important;
+        text-decoration: none !important;
+      }
+      .featured-box .feature-content h4 a:hover {
+        color: #4f46e5 !important;
+      }
+      .featured-box .feature-content span {
+        font-size: 12px !important;
+        color: #94a3b8 !important;
+        margin-bottom: 10px !important;
+        display: block !important;
+      }
+      .featured-box .feature-content ul.address {
+        margin: 0 0 14px 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px 0 !important;
+      }
+      .featured-box .feature-content ul.address li {
+        width: 50% !important;
+        font-size: 12px !important;
+        color: #64748b !important;
+        display: flex !important;
+        align-items: center !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        padding-right: 6px !important;
+        float: none !important;
+      }
+      .featured-box .feature-content ul.address li i {
+        margin-right: 5px !important;
+        color: #4f46e5 !important;
+        flex-shrink: 0 !important;
+      }
+      .featured-box .feature-content .listing-bottom {
+        margin-top: auto !important;
+        padding-top: 12px !important;
+        border-top: 1px solid #f1f5f9 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        float: none !important;
+      }
+      .featured-box .feature-content .listing-bottom .price {
+        font-size: 19px !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        float: none !important;
+      }
+      .featured-box .feature-content .listing-bottom .btn-verified {
+        margin: 0 !important;
+        font-size: 11px !important;
+        color: #059669 !important;
+        background: #ecfdf5 !important;
+        border: 1px solid #a7f3d0 !important;
+        padding: 3px 8px !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        float: none !important;
+      }
+
+      /* In list-view, maintain horizontal row with fixed image */
+      #list-view .featured-box {
+        flex-direction: row !important;
+        height: auto !important;
+      }
+      #list-view .featured-box figure {
+        width: 300px !important;
+        max-width: 36% !important;
+        height: auto !important;
+        min-height: 220px !important;
+        max-height: 240px !important;
+      }
+      #list-view .featured-box figure img {
+        height: 100% !important;
+        max-height: 240px !important;
+      }
+      #list-view .featured-box .feature-content {
+        width: 64% !important;
+      }
+      @media (max-width: 768px) {
+        #list-view .featured-box {
+          flex-direction: column !important;
+        }
+        #list-view .featured-box figure {
+          width: 100% !important;
+          max-width: 100% !important;
+          height: 200px !important;
+          min-height: 200px !important;
+        }
+        #list-view .featured-box .feature-content {
+          width: 100% !important;
+        }
+      }
+
+      /* Navbar Master Wrapper */
+      #preloved-main-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 9999;
+        background: #ffffff;
+        box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+        border-bottom: 1px solid var(--pl-border);
+        font-family: 'Inter', sans-serif;
+      }
+
+      /* Top Tier: Primary Navbar - 100% Full Screen Edge to Edge */
+      .pl-nav-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 24px;
+        gap: 16px;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      /* Brand Logo */
+      .pl-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none !important;
+        flex-shrink: 0;
+      }
+      .pl-brand-logo-img {
+        height: 44px;
+        width: auto;
+        max-width: 44px;
+        object-fit: contain;
+        display: block;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+      }
+      .pl-brand:hover .pl-brand-logo-img {
+        transform: scale(1.06);
+      }
+      .pl-brand-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+      }
+      .pl-brand-text {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #0f172a;
+        line-height: 1.1;
+      }
+      .pl-brand-text span {
+        color: #4f46e5;
+      }
+      .pl-brand-sub {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        color: #64748b;
+        display: block;
+      }
+
+      /* Location Picker Pill */
+      .pl-location-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+      .pl-location-btn:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        color: #0f172a;
+      }
+
+      /* Search Bar */
+      .pl-search-wrap {
+        flex: 1;
+        max-width: 900px;
+        margin: 0 16px;
+        position: relative;
+      }
+      .pl-search-form {
+        display: flex;
+        align-items: center;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        background: #ffffff;
+        transition: all 0.2s ease;
+        overflow: hidden;
+      }
+      .pl-search-form:focus-within {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+      }
+      .pl-search-cat {
+        border: none;
+        background: #f8fafc;
+        border-right: 1px solid #e2e8f0;
+        padding: 9px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #475569;
+        outline: none;
+        cursor: pointer;
+        max-width: 140px;
+      }
+      .pl-search-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 9px 14px;
+        font-size: 14px;
+        color: #0f172a;
+        background: transparent;
+      }
+      .pl-search-input::placeholder {
+        color: #94a3b8;
+      }
+      .pl-search-submit {
+        background: #4f46e5;
+        color: #ffffff;
+        border: none;
+        padding: 8px 16px;
+        margin: 3px 4px 3px 0;
+        border-radius: 8px;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .pl-search-submit:hover {
+        background: #4338ca;
+        transform: scale(1.02);
+      }
+
+      /* Right Actions Area */
+      .pl-nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      .pl-icon-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none !important;
+      }
+      .pl-icon-btn:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+      .pl-badge {
+        background: #ef4444;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 9999px;
+        line-height: 1;
+      }
+      .pl-badge-blue {
+        background: #4f46e5;
+      }
+      .pl-badge-red {
+        background: #ef4444;
+        color: #ffffff;
+      }
+
+      /* Floating Wishlist Button on Product Cards */
+      .pl-wishlist-toggle-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        box-shadow: 0 3px 8px rgba(15, 23, 42, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        cursor: pointer;
+        z-index: 5;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        outline: none;
+        backdrop-filter: blur(4px);
+      }
+      .pl-wishlist-toggle-btn:hover {
+        transform: scale(1.12);
+        background: #ffffff;
+        color: #ef4444;
+        box-shadow: 0 6px 14px rgba(239, 68, 68, 0.25);
+      }
+      .pl-wishlist-toggle-btn.active {
+        color: #ef4444;
+        background: #ffffff;
+      }
+      .pl-wishlist-toggle-btn.active svg {
+        fill: #ef4444 !important;
+        stroke: #ef4444 !important;
+      }
+
+      /* Wishlist Toast Notification */
+      #plWishlistToast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #0f172a;
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 99999;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+      }
+      #plWishlistToast.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      /* Post Ad Button */
+      .pl-sell-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        color: #ffffff !important;
+        font-weight: 700;
+        font-size: 13.5px;
+        padding: 8px 18px;
+        border-radius: 8px;
+        text-decoration: none !important;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+      .pl-sell-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        color: #ffffff !important;
+      }
+
+      /* Secondary Tier: Sub-Navbar (Categories & Deals) - Strictly One Row Edge-to-Edge */
+      .pl-nav-sub {
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+        padding: 4px 18px;
+        position: relative;
+        z-index: 1000;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .pl-sub-inner {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        box-sizing: border-box;
+      }
+      .pl-category-links {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .pl-category-links > li {
+        flex-shrink: 0;
+      }
+      .pl-cat-dropdown-wrap {
+        position: relative;
+        flex-shrink: 0;
+      }
+      .pl-cat-link {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #334155;
+        text-decoration: none !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s ease;
+        padding: 6px 9px;
+        border-radius: 8px;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        white-space: nowrap !important;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+      }
+      .pl-cat-link:hover, .pl-cat-link.active, .pl-cat-dropdown-wrap.is-open > .pl-cat-link {
+        color: #4f46e5;
+        background: #f1f5f9;
+      }
+      .pl-cat-arrow {
+        transition: transform 0.2s ease, opacity 0.2s ease;
+        opacity: 0.6;
+        margin-left: 1px;
+        flex-shrink: 0;
+      }
+      .pl-cat-dropdown-wrap:hover > .pl-cat-link .pl-cat-arrow,
+      .pl-cat-dropdown-wrap.is-open > .pl-cat-link .pl-cat-arrow {
+        transform: rotate(180deg);
+        opacity: 1;
+        color: #4f46e5;
+      }
+
+      @media (min-width: 1400px) {
+        .pl-cat-link {
+          font-size: 13px;
+          padding: 6px 11px;
+          gap: 6px;
+        }
+        .pl-category-links {
+          gap: 6px;
+        }
+      }
+
+      @media (min-width: 1600px) {
+        .pl-cat-link {
+          font-size: 13.5px;
+          padding: 7px 13px;
+          gap: 6px;
+        }
+        .pl-category-links {
+          gap: 8px;
+        }
+      }
+
+      /* Floating Subcategory Dropdown Panel */
+      .pl-cat-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        min-width: 340px;
+        width: max-content;
+        max-width: 440px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.05);
+        padding: 0;
+        z-index: 10050;
+        overflow: hidden;
+        animation: plFadeIn 0.15s ease-out;
+      }
+      /* Align right for categories near the edge */
+      .pl-cat-dropdown-wrap:nth-last-child(-n+5) .pl-cat-dropdown-menu {
+        left: auto;
+        right: 0;
+      }
+      .pl-cat-dropdown-menu::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 0;
+        right: 0;
+        height: 8px;
+      }
+      .pl-cat-dropdown-wrap:hover > .pl-cat-dropdown-menu,
+      .pl-cat-dropdown-wrap.is-open > .pl-cat-dropdown-menu {
+        display: block;
+      }
+      .pl-cat-dropdown-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 13px 18px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .pl-cat-dropdown-header-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+      .pl-cat-dropdown-title {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+      }
+      .pl-cat-dropdown-subtext {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: #64748b;
+        line-height: 1;
+      }
+      .pl-cat-view-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4f46e5;
+        background: #eef2ff;
+        border: 1px solid #c7d2fe;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        text-decoration: none !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.15s ease;
+      }
+      .pl-cat-view-all:hover {
+        background: #4f46e5;
+        color: #ffffff;
+        border-color: #4f46e5;
+        box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+      }
+      .pl-cat-view-all svg {
+        transition: transform 0.15s ease;
+      }
+      .pl-cat-view-all:hover svg {
+        transform: translateX(2px);
+      }
+      .pl-subcat-list {
+        list-style: none;
+        margin: 0;
+        padding: 6px 0;
+        max-height: 380px;
+        overflow-y: auto;
+      }
+      .pl-subcat-item {
+        margin: 0;
+      }
+      .pl-subcat-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #334155;
+        text-decoration: none !important;
+        transition: all 0.15s ease;
+      }
+      .pl-subcat-link:hover {
+        background: #f1f5f9;
+        color: #4f46e5;
+        padding-left: 20px;
+        font-weight: 600;
+      }
+      .pl-cat-dropdown-footer {
+        padding: 9px 16px;
+        background: #fafafa;
+        border-top: 1px solid #f1f5f9;
+        text-align: center;
+      }
+      .pl-cat-dropdown-footer a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4f46e5;
+        text-decoration: none !important;
+      }
+      .pl-cat-dropdown-footer a:hover {
+        color: #3730a3;
+        text-decoration: underline !important;
+      }
+
+      /* Mega Dropdown for All Categories */
+      .pl-mega-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        width: 900px;
+        max-height: 520px;
+        overflow-y: auto;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16);
+        padding: 18px 20px;
+        z-index: 10050;
+        display: none;
+        animation: plFadeIn 0.15s ease-out;
+      }
+      .pl-mega-menu.show, .pl-cat-dropdown-wrap:hover .pl-mega-menu, .pl-cat-dropdown-wrap.is-open .pl-mega-menu {
+        display: block;
+      }
+      .pl-mega-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .pl-mega-col h4 {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 6px 0;
+        padding-bottom: 4px;
+        border-bottom: 2px solid #e0e7ff;
+      }
+      .pl-mega-col h4 a {
+        color: #0f172a;
+        text-decoration: none !important;
+      }
+      .pl-mega-col h4 a:hover {
+        color: #4f46e5;
+      }
+      .pl-mega-col ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .pl-mega-col li a {
+        display: block;
+        padding: 3px 0;
+        font-size: 12px;
+        color: #475569;
+        text-decoration: none !important;
+        transition: color 0.15s;
+      }
+      .pl-mega-col li a:hover {
+        color: #4f46e5;
+      }
+
+      /* Mobile Accordion Styles */
+      .pl-mobile-cat-item {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 6px 0;
+      }
+      .pl-mobile-cat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .pl-mobile-cat-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1e293b;
+        text-decoration: none !important;
+        padding: 6px 0;
+        flex: 1;
+      }
+      .pl-mobile-cat-btn {
+        background: #f1f5f9;
+        border: none;
+        border-radius: 6px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .pl-mobile-cat-btn.open {
+        transform: rotate(180deg);
+        background: #e0e7ff;
+        color: #4f46e5;
+      }
+      .pl-mobile-subcat-box {
+        display: none;
+        padding: 6px 0 6px 12px;
+        border-left: 2px solid #e0e7ff;
+        margin: 4px 0 6px 4px;
+      }
+      .pl-mobile-subcat-box.show {
+        display: block;
+      }
+      .pl-mobile-subcat-link {
+        display: block;
+        padding: 5px 0;
+        font-size: 13px;
+        color: #475569;
+        text-decoration: none !important;
+      }
+      .pl-mobile-subcat-link:hover {
+        color: #4f46e5;
+      }
+
+      .pl-deal-badge {
+        background: #fee2e2;
+        color: #dc2626;
+        font-size: 9.5px;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 9999px;
+        margin-left: 2px;
+        line-height: 1.2;
+      }
+      .pl-popular-badge {
+        background: #e0e7ff;
+        color: #4338ca;
+        font-size: 9.5px;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 9999px;
+        margin-left: 2px;
+        line-height: 1.2;
+      }
+
+      /* Flyout Menus & Dropdowns */
+      .pl-dropdown {
+        position: relative;
+      }
+      .pl-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: var(--pl-card-shadow);
+        z-index: 10000;
+        display: none;
+        overflow: hidden;
+        animation: plFadeIn 0.18s ease-out;
+      }
+      .pl-menu.show {
+        display: block;
+      }
+      @keyframes plFadeIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Specific Dropdown Widths */
+      .pl-menu-location { width: 280px; max-height: 380px; overflow-y: auto; }
+      .pl-menu-cart { width: 380px; }
+      .pl-menu-account { width: 260px; }
+      .pl-menu-notif { width: 320px; }
+
+      /* Dropdown Inner Styles */
+      .pl-menu-header {
+        padding: 12px 16px;
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .pl-menu-list {
+        list-style: none;
+        margin: 0;
+        padding: 6px 0;
+      }
+      .pl-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none !important;
+        transition: background 0.15s ease;
+      }
+      .pl-menu-item:hover {
+        background: #f1f5f9;
+        color: #4f46e5;
+      }
+      .pl-menu-divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin: 6px 0;
+      }
+
+      /* Cart Item Rows */
+      .pl-cart-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        border-bottom: 1px solid #f8fafc;
+        transition: all 0.2s ease;
+      }
+      .pl-cart-item:hover {
+        background: #f8fafc;
+      }
+      .pl-cart-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0f172a;
+        text-decoration: none !important;
+        display: block;
+        max-width: 220px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .pl-cart-meta {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 2px;
+      }
+      .pl-cart-del {
+        background: transparent;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+      }
+      .pl-cart-del:hover {
+        background: #fee2e2;
+      }
+
+      /* Notification Item Rows */
+      .pl-notif-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        transition: background 0.15s ease;
+      }
+      .pl-notif-item:hover {
+        background: #f8fafc;
+      }
+      .pl-notif-del {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 16px;
+        line-height: 1;
+        transition: all 0.15s ease;
+        margin-left: 8px;
+      }
+      .pl-notif-del:hover {
+        background: #fee2e2;
+        color: #ef4444;
+      }
+
+      /* Mobile Drawer */
+      #pl-mobile-drawer {
+        display: none;
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        padding: 16px 20px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      #pl-mobile-drawer.show {
+        display: block;
+      }
+      .pl-mobile-toggle {
+        display: none;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 8px;
+        color: #334155;
+      }
+
+      /* Responsive Breakpoints */
+      @media (max-width: 991px) {
+        .pl-search-wrap { display: none; }
+        .pl-location-btn { display: none; }
+        .pl-nav-sub { display: none; }
+        .pl-mobile-toggle { display: inline-flex; }
+        .pl-sell-btn span { display: none; }
+        .pl-sell-btn { padding: 8px 12px; }
+      }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Area wrapper Starts -->
+    <header id="header-wrap">
+        <nav id="preloved-main-header">
+            <!-- 1. TOP BAR: Brand, Location, Search, Actions, CTAs -->
+            <div class="pl-nav-top">
+
+                <!-- Logo & Brand -->
+                <div class="d-flex align-items-center" style="gap: 12px; flex-shrink: 0;">
+                    <a href="{% url 'home' %}" class="pl-brand" title="PreLoved - Peer to Peer Marketplace">
+                        <img src="{% static 'images/site-logo.png' %}" alt="PreLoved Logo" class="pl-brand-logo-img">
+                        <div>
+                            <div class="pl-brand-text"><span>Pre</span>Loved</div>
+                            <span class="pl-brand-sub">Second-Hand Goods</span>
+                        </div>
+                    </a>
+
+                    <!-- Location Selector Dropdown -->
+                    <div class="pl-dropdown">
+                        <button id="plLocationBtn" type="button" class="pl-location-btn" title="Filter by State">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            <span id="plCurrentState">All India</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div id="plLocationMenu" class="pl-menu pl-menu-location">
+                            <div class="pl-menu-header">
+                                <span>Select Your State</span>
+                                <a href="{% url 'ads-listing' %}" style="font-size: 11px; color: #4f46e5; text-decoration: none;">Reset All</a>
+                            </div>
+                            <ul class="pl-menu-list">
+                                <li>
+                                    <a href="{% url 'ads-listing' %}" class="pl-menu-item" style="font-weight: 700; color: #4f46e5;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                                        All India (Entire Country)
+                                    </a>
+                                </li>
+                                {% if nav_states %}
+                                    {% for s in nav_states %}
+                                    <li>
+                                        <a href="{% url 'state-archive' s.slug %}" class="pl-menu-item">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="12" cy="12" r="3"></circle></svg>
+                                            {{ s.state_name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li><a href="{% url 'state-archive' 'gujarat' %}" class="pl-menu-item">Gujarat</a></li>
+                                    <li><a href="{% url 'state-archive' 'maharashtra' %}" class="pl-menu-item">Maharashtra</a></li>
+                                    <li><a href="{% url 'state-archive' 'delhi' %}" class="pl-menu-item">Delhi</a></li>
+                                    <li><a href="{% url 'state-archive' 'karnataka' %}" class="pl-menu-item">Karnataka</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Marketplace Search Bar -->
+                <div class="pl-search-wrap">
+                    <form method="GET" action="{% url 'ads-search' %}" class="pl-search-form" id="header-search-form">
+                        <select name="category_name" class="pl-search-cat" title="Select Category">
+                            <option value="">All Categories</option>
+                            {% if nav_categories %}
+                                {% for cat in nav_categories %}
+                                    {% if cat.subcategories.all %}
+                                        <optgroup label="{{ cat.category_name }}">
+                                            <option value="{{ cat.category_name }}">{{ cat.category_name }} (All)</option>
+                                            {% for sub in cat.subcategories.all %}
+                                                <option value="{{ sub.category_name }}">{{ sub.category_name }}</option>
+                                            {% endfor %}
+                                        </optgroup>
+                                    {% else %}
+                                        <option value="{{ cat.category_name }}">{{ cat.category_name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                        <input type="text" name="customword" class="pl-search-input" placeholder="Search pre-loved phones, laptops, electronics, furniture..." autocomplete="off">
+                        <button type="submit" class="pl-search-submit" id="header-search-btn" title="Search">
+                            <svg style="pointer-events: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right Action Icons & Dropdowns -->
+                <div class="pl-nav-actions">
+
+                    <!-- Notifications Dropdown -->
+                    <div class="pl-dropdown">
+                        <button id="plNotifBtn" type="button" class="pl-icon-btn" title="Notifications">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            <span id="plNotifBadge" class="pl-badge">3</span>
+                        </button>
+                        <div id="plNotifMenu" class="pl-menu pl-menu-notif">
+                            <div class="pl-menu-header">
+                                <span>Notifications (<span id="plNotifCountText">3</span>)</span>
+                                <button id="plClearNotifBtn" type="button" style="font-size: 11px; color: #ef4444; background: none; border: none; cursor: pointer; font-weight: 600;">Clear All</button>
+                            </div>
+                            <ul id="plNotifList" class="pl-menu-list" style="max-height: 280px; overflow-y: auto;">
+                                <!-- Dynamic notifications from localStorage -->
+                            </ul>
+                            <div id="plNotifEmpty" style="display: none; padding: 24px; text-align: center; color: #94a3b8;">
+                                <div style="font-size: 24px; margin-bottom: 6px; color: #94a3b8; display: flex; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+                                <div style="font-size: 13px; font-weight: 600; color: #334155;">No new notifications</div>
+                                <div style="font-size: 11px; color: #64748b;">You're all caught up!</div>
+                                <button id="plResetNotifBtn" type="button" style="margin-top: 10px; font-size: 11px; color: #4f46e5; background: none; border: 1px solid #c7d2fe; padding: 4px 10px; border-radius: 6px; cursor: pointer;">Reset Sample Notifications</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wishlist Nav Option -->
+                    <a href="{% url 'wishlist' %}" class="pl-icon-btn" id="plWishlistBtn" title="View Saved Wishlist" style="text-decoration: none !important;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if wishlist_count %}#ef4444{% else %}none{% endif %}" stroke="{% if wishlist_count %}#ef4444{% else %}currentColor{% endif %}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="d-none d-sm-inline">Wishlist</span>
+                        <span id="plWishlistBadge" class="pl-badge pl-badge-red" style="{% if not wishlist_count %}display: none;{% endif %}">{{ wishlist_count|default:"0" }}</span>
+                    </a>
+
+                    <!-- User Account Dropdown (All Components from navbar.txt) -->
+                    <div class="pl-dropdown">
+                        <button id="plAccountBtn" type="button" class="pl-icon-btn" title="Account Menu">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <span class="d-none d-sm-inline">
+                                {% if request.user.is_authenticated %}
+                                    {{ request.user.username|truncatechars:10 }}
+                                {% else %}
+                                    Account
+                                {% endif %}
+                            </span>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div id="plAccountMenu" class="pl-menu pl-menu-account">
+                            {% if request.user.is_authenticated %}
+                            <div class="pl-menu-header" style="flex-direction: column; align-items: flex-start; gap: 2px;">
+                                <span style="font-size: 10px; text-transform: uppercase; color: #94a3b8;">Signed in as</span>
+                                <strong style="color: #4f46e5; font-size: 13px;">{{ request.user.username }}</strong>
+                            </div>
+                            <ul class="pl-menu-list">
+                                <li><a href="{% url 'dashboard' %}" class="pl-menu-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> My Account / Dashboard</a></li>
+                                <li><a href="{% url 'dashboard' %}" class="pl-menu-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> My Orders & Bids</a></li>
+                                <li><a href="{% url 'profile-ads' %}" class="pl-menu-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> My Ads</a></li>
+                                <li><a href="{% url 'wishlist' %}" class="pl-menu-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> My Wishlist <span id="plMenuWishlistCount" class="badge badge-danger ml-auto" style="{% if not wishlist_count %}display: none;{% endif %}">{{ wishlist_count|default:"0" }}</span></a></li>
+                                <li><a href="{% url 'profile-settings' %}" class="pl-menu-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Delivery Addresses</a></li>
+                                <li><a href="{% url 'profile-settings' %}" class="pl-menu-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Billing Data</a></li>
+                                <li><a href="{% url 'profile-settings' %}" class="pl-menu-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</a></li>
+                                <li class="pl-menu-divider"></li>
+                                <li><a href="{% url 'logout' %}" class="pl-menu-item" style="color: #ef4444;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Sign Out</a></li>
+                            </ul>
+                            {% else %}
+                            <div class="pl-menu-header">
+                                <span>Welcome to PreLoved</span>
+                            </div>
+                            <ul class="pl-menu-list">
+                                <li><a href="{% url 'login' %}" class="pl-menu-item" style="font-weight: 600; color: #4f46e5;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg> Log In</a></li>
+                                <li><a href="{% url 'signup' %}" class="pl-menu-item" style="font-weight: 600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> Sign Up / Register</a></li>
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Post An Ad / Sell Button (from navbar.txt: Sell) -->
+                    <a href="{% url 'post-ads' %}" class="pl-sell-btn" title="Post Free Ad on PreLoved">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Sell / Post Ad</span>
+                    </a>
+
+                    <!-- Mobile Hamburger Button -->
+                    <button id="plMobileToggleBtn" type="button" class="pl-mobile-toggle" aria-label="Toggle Navigation">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- 2. SUB-BAR: Category & Deals Quick Strip -->
+            <div class="pl-nav-sub">
+                <div class="pl-sub-inner">
+                    <ul class="pl-category-links">
+                        <!-- 1. All Categories Button with Mega Menu -->
+                        <li class="pl-cat-dropdown-wrap">
+                            <a href="{% url 'ads-listing' %}" class="pl-cat-link" style="font-weight: 700; color: #4f46e5;" id="plAllCatBtn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                                <span>All Categories</span>
+                                <svg class="pl-cat-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </a>
+                            <div class="pl-mega-menu" id="plMegaMenu">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="font-size: 14px; font-weight: 800; color: #0f172a;">Explore All Marketplace Categories</span>
+                                    <a href="{% url 'ads-listing' %}" style="font-size: 12px; font-weight: 700; color: #4f46e5; text-decoration: none;">View All Ads &rarr;</a>
+                                </div>
+                                <div class="pl-mega-grid">
+                                    {% for cat in nav_categories %}
+                                    <div class="pl-mega-col">
+                                        <h4>
+                                            <a href="{% url 'category-archive' cat.slug %}">{{ cat.category_name }}</a>
+                                        </h4>
+                                        {% if cat.subcategories.all %}
+                                        <ul>
+                                            {% for sub in cat.subcategories.all|slice:":6" %}
+                                            <li>
+                                                <a href="{% url 'category-archive' sub.slug %}">{{ sub.category_name }}</a>
+                                            </li>
+                                            {% endfor %}
+                                            {% if cat.subcategories.all|length > 6 %}
+                                            <li>
+                                                <a href="{% url 'category-archive' cat.slug %}" style="color: #4f46e5; font-weight: 600;">+ more {{ cat.category_name }}</a>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- 2. Main Hierarchical Category Dropdowns -->
+                        {% if nav_categories %}
+                            {% for cat in nav_categories %}
+                            <li class="pl-cat-dropdown-wrap">
+                                <a href="{% url 'category-archive' cat.slug %}" class="pl-cat-link pl-cat-btn" data-cat="{{ cat.slug }}">
+                                    <span>{{ cat.category_name }}</span>
+                                    {% if cat.subcategories.all %}
+                                    <svg class="pl-cat-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    {% endif %}
+                                </a>
+                                {% if cat.subcategories.all %}
+                                <div class="pl-cat-dropdown-menu">
+                                    <div class="pl-cat-dropdown-header">
+                                        <div class="pl-cat-dropdown-header-info">
+                                            <span class="pl-cat-dropdown-title">{{ cat.category_name }}</span>
+                                            <span class="pl-cat-dropdown-subtext">{{ cat.subcategories.count }} subcategories</span>
+                                        </div>
+                                        <a href="{% url 'category-archive' cat.slug %}" class="pl-cat-view-all" title="View all ads in {{ cat.category_name }}">
+                                            <span>View all</span>
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </a>
+                                    </div>
+                                    <ul class="pl-subcat-list">
+                                        {% for sub in cat.subcategories.all %}
+                                        <li class="pl-subcat-item">
+                                            <a href="{% url 'category-archive' sub.slug %}" class="pl-subcat-link">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                                <span style="flex: 1;">{{ sub.category_name }}</span>
+                                                {% if '>' in sub.category_name %}
+                                                <span class="pl-subcat-arrow-pill" style="font-size: 11px; font-weight: 800; color: #4f46e5; background: #e0e7ff; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px; flex-shrink: 0;" title="More items inside">&gt;</span>
+                                                {% endif %}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div class="pl-cat-dropdown-footer">
+                                        <a href="{% url 'category-archive' cat.slug %}">
+                                            <span>Browse all in {{ cat.category_name }}</span>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        {% endif %}
+
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 3. MOBILE DRAWER: Comprehensive Mobile Navigation -->
+            <div id="pl-mobile-drawer">
+                <!-- Mobile Search Form -->
+                <form method="GET" action="{% url 'ads-search' %}" id="mobile-search-form" style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <input type="text" name="customword" placeholder="Search pre-loved goods..." style="flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 14px; outline: none;">
+                    <button type="submit" id="mobile-search-btn" class="pl-sell-btn" style="padding: 8px 14px;">Search</button>
+                </form>
+
+                <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; margin-bottom: 8px;">Explore PreLoved</div>
+                <ul style="list-style: none; padding: 0; margin: 0 0 16px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <li><a href="{% url 'home' %}" class="pl-cat-link" style="padding: 6px 0; display: flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg> Home</a></li>
+                    <li><a href="{% url 'ads-listing' %}" class="pl-cat-link" style="padding: 6px 0; display: flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg> All Ads</a></li>
+                    <li><a href="{% url 'wishlist' %}" class="pl-cat-link" style="padding: 6px 0; color: #ef4444; font-weight: 700; display: flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Wishlist (<span class="mobile-wishlist-count">{{ wishlist_count|default:"0" }}</span>)</a></li>
+                    <li><a href="{% url 'post-ads' %}" class="pl-cat-link" style="padding: 6px 0; color: #4f46e5; font-weight: 700; display: flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> Sell Item</a></li>
+                </ul>
+
+                <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; margin-bottom: 8px;">Categories & Subcategories</div>
+                <div class="pl-mobile-cat-accordion" style="margin-bottom: 16px;">
+                    {% if nav_categories %}
+                        {% for cat in nav_categories %}
+                        <div class="pl-mobile-cat-item">
+                            <div class="pl-mobile-cat-header">
+                                <a href="{% url 'category-archive' cat.slug %}" class="pl-mobile-cat-title">{{ cat.category_name }}</a>
+                                {% if cat.subcategories.all %}
+                                <button type="button" class="pl-mobile-cat-btn" data-target="m-cat-{{ cat.id }}" title="Toggle subcategories">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                {% endif %}
+                            </div>
+                            {% if cat.subcategories.all %}
+                            <div class="pl-mobile-subcat-box" id="m-cat-{{ cat.id }}">
+                                <a href="{% url 'category-archive' cat.slug %}" class="pl-mobile-subcat-link" style="color: #4f46e5; font-weight: 700;">View All in {{ cat.category_name }} &rarr;</a>
+                                {% for sub in cat.subcategories.all %}
+                                <a href="{% url 'category-archive' sub.slug %}" class="pl-mobile-subcat-link" style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span>{{ sub.category_name }}</span>
+                                    {% if '>' in sub.category_name %}
+                                    <span style="font-size: 11px; font-weight: 800; color: #4f46e5; background: #e0e7ff; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px;">&gt;</span>
+                                    {% endif %}
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #94a3b8; margin-bottom: 8px;">Account & Support</div>
+                <ul style="list-style: none; padding: 0; margin: 0 0 16px 0;">
+                    {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}" class="pl-menu-item" style="padding: 6px 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> My Account / Dashboard</a></li>
+                    <li><a href="{% url 'profile-ads' %}" class="pl-menu-item" style="padding: 6px 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> My Ads</a></li>
+                    <li><a href="{% url 'wishlist' %}" class="pl-menu-item" style="padding: 6px 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Wishlist</a></li>
+                    <li><a href="{% url 'profile-settings' %}" class="pl-menu-item" style="padding: 6px 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</a></li>
+                    <li><a href="{% url 'logout' %}" class="pl-menu-item" style="padding: 6px 0; color: #ef4444;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Sign Out</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}" class="pl-menu-item" style="padding: 6px 0; color: #4f46e5; font-weight: 600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg> Log In</a></li>
+                    <li><a href="{% url 'signup' %}" class="pl-menu-item" style="padding: 6px 0; font-weight: 600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> Sign Up / Register</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'faq' %}" class="pl-menu-item" style="padding: 6px 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> FAQ</a></li>
+                    <li><a href="{% url 'contact' %}" class="pl-menu-item" style="padding: 6px 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Contact Us</a></li>
+                </ul>
+
+                <a href="{% url 'post-ads' %}" class="pl-sell-btn" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px;">
+                    + Post An Ad (Sell Free)
+                </a>
+            </div>
+        </nav>
+    </header>
+    <!-- Header Area wrapper End -->
+
+    <!-- Interactive Dropdowns, Cart & Notifications Controller with Persistent State -->
+    <script>
+      (function () {
+        // --- Default Seed Data ---
+        var INITIAL_CART = [
+          { id: 'cart-1', title: 'Apple iPhone 15 (128GB)', price: '$599', qty: 1, condition: 'Like New' },
+          { id: 'cart-2', title: 'Apple iPad Air 5th Gen', price: '$499', qty: 1, condition: 'Excellent' },
+          { id: 'cart-3', title: 'Apple Watch SE (GPS, 44mm)', price: '$299', qty: 1, condition: 'Good Condition' },
+          { id: 'cart-4', title: 'Sony PlayStation 5 Console', price: '$449', qty: 1, condition: 'With Controller' },
+          { id: 'cart-5', title: 'Apple MacBook Air M1 (8GB / 256GB)', price: '$650', qty: 1, condition: 'Battery 94%' }
+        ];
+
+        var INITIAL_NOTIFICATIONS = [
+          { id: 'notif-1', icon: '<i class="lni-tag" style="color: #4f46e5;"></i>', title: 'New Offer Received', text: 'Buyer offered $520 on Apple iPhone 15', time: '5 minutes ago' },
+          { id: 'notif-2', icon: '<i class="lni-bolt" style="color: #f59e0b;"></i>', title: 'Ad Approved', text: 'Your listing is now live in Gujarat', time: '2 hours ago' },
+          { id: 'notif-3', icon: '<i class="lni-checkmark-circle" style="color: #10b981;"></i>', title: 'Welcome to PreLoved!', text: 'Start browsing second-hand items near you', time: '1 day ago' }
+        ];
+
+        // CSRF Token helper
+        function getPreLovedCsrfToken() {
+          var cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+              var cookie = cookies[i].trim();
+              if (cookie.substring(0, 10) === 'csrftoken=') {
+                cookieValue = decodeURIComponent(cookie.substring(10));
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+
+        // Global Wishlist Toast Helper
+        function showWishlistToast(message, isAdded) {
+          var toast = document.getElementById('plWishlistToast');
+          if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'plWishlistToast';
+            document.body.appendChild(toast);
+          }
+          var icon = isAdded ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+          toast.innerHTML = '<span style="display: inline-flex; align-items: center;">' + icon + '</span><span>' + escapeHtml(message) + '</span>';
+          toast.classList.add('show');
+          clearTimeout(window.__plToastTimer);
+          window.__plToastTimer = setTimeout(function() {
+            toast.classList.remove('show');
+          }, 2800);
+        }
+
+        // Global Wishlist Toggle Function
+        window.toggleWishlist = function(adId, btnEl) {
+          if (!adId) return;
+          if (btnEl) btnEl.style.transform = 'scale(1.25)';
+
+          fetch('/wishlist/toggle/' + adId + '/', {
+            method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': getPreLovedCsrfToken(),
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(function(res) {
+            if (res.status === 401) {
+              window.location.href = '/login/?next=' + encodeURIComponent(window.location.pathname);
+              return null;
+            }
+            return res.json();
+          })
+          .then(function(data) {
+            if (!data) return;
+            if (btnEl) btnEl.style.transform = '';
+
+            if (data.status === 'success') {
+              // Update all toggle buttons on page for this ad
+              var buttons = document.querySelectorAll('.pl-wishlist-toggle-btn[data-ad-id="' + adId + '"], [onclick*="toggleWishlist(' + adId + '"]');
+              buttons.forEach(function(btn) {
+                var svg = btn.querySelector('svg');
+                if (data.in_wishlist) {
+                  btn.classList.add('active');
+                  if (svg) {
+                    svg.setAttribute('fill', '#ef4444');
+                    svg.setAttribute('stroke', '#ef4444');
+                  }
+                } else {
+                  btn.classList.remove('active');
+                  if (svg) {
+                    svg.setAttribute('fill', 'none');
+                    svg.setAttribute('stroke', 'currentColor');
+                  }
+                }
+              });
+
+              // Update Header Wishlist Badge & Nav Icon
+              var badge = document.getElementById('plWishlistBadge');
+              if (badge) {
+                badge.textContent = data.wishlist_count;
+                badge.style.display = data.wishlist_count > 0 ? 'inline-block' : 'none';
+              }
+              var navIcon = document.querySelector('#plWishlistBtn svg');
+              if (navIcon) {
+                if (data.wishlist_count > 0) {
+                  navIcon.setAttribute('fill', '#ef4444');
+                  navIcon.setAttribute('stroke', '#ef4444');
+                } else {
+                  navIcon.setAttribute('fill', 'none');
+                  navIcon.setAttribute('stroke', 'currentColor');
+                }
+              }
+              var menuBadge = document.getElementById('plMenuWishlistCount');
+              if (menuBadge) {
+                menuBadge.textContent = data.wishlist_count;
+                menuBadge.style.display = data.wishlist_count > 0 ? 'inline-block' : 'none';
+              }
+              document.querySelectorAll('.mobile-wishlist-count').forEach(function(el) {
+                el.textContent = data.wishlist_count;
+              });
+
+              showWishlistToast(data.message, data.in_wishlist);
+            }
+          })
+          .catch(function(err) {
+            if (btnEl) btnEl.style.transform = '';
+            console.error('Wishlist error:', err);
+          });
+        };
+
+        function escapeHtml(text) {
+          if (!text) return '';
+          return String(text).replace(/[&<>"']/g, function(m) {
+            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+          });
+        }
+
+        // --- LocalStorage State Managers ---
+        function getCartItems() {
+          var stored = localStorage.getItem('preloved_cart_items');
+          if (stored !== null) {
+            try { return JSON.parse(stored); } catch (e) { return []; }
+          }
+          // Seed once on first ever visit
+          localStorage.setItem('preloved_cart_items', JSON.stringify(INITIAL_CART));
+          return INITIAL_CART;
+        }
+
+        function saveCartItems(items) {
+          localStorage.setItem('preloved_cart_items', JSON.stringify(items));
+// renderCart removed
+        }
+
+        function getNotifications() {
+          var stored = localStorage.getItem('preloved_notifications');
+          if (stored !== null) {
+            try { return JSON.parse(stored); } catch (e) { return []; }
+          }
+          // Seed once on first ever visit
+          localStorage.setItem('preloved_notifications', JSON.stringify(INITIAL_NOTIFICATIONS));
+          return INITIAL_NOTIFICATIONS;
+        }
+
+        function saveNotifications(items) {
+          localStorage.setItem('preloved_notifications', JSON.stringify(items));
+          renderNotifications();
+        }
+
+        // --- Render Functions ---
+        function renderCart() {
+          var items = getCartItems();
+          var listEl = document.getElementById('plCartList');
+          var emptyEl = document.getElementById('plCartEmpty');
+          var badgeEl = document.getElementById('plCartBadge');
+          var countTextEl = document.getElementById('plCartCountText');
+          var footerEl = document.getElementById('plCartFooter');
+
+          if (!listEl) return;
+
+          if (items.length === 0) {
+            listEl.innerHTML = '';
+            listEl.style.display = 'none';
+            if (emptyEl) emptyEl.style.display = 'block';
+            if (badgeEl) badgeEl.style.display = 'none';
+            if (countTextEl) countTextEl.textContent = '0';
+            if (footerEl) footerEl.style.display = 'none';
+          } else {
+            listEl.style.display = 'block';
+            if (emptyEl) emptyEl.style.display = 'none';
+            if (badgeEl) {
+              badgeEl.style.display = 'inline-block';
+              badgeEl.textContent = items.length;
+            }
+            if (countTextEl) countTextEl.textContent = items.length;
+            if (footerEl) footerEl.style.display = 'block';
+
+            var html = '';
+            items.forEach(function (item) {
+              html += '<div class="pl-cart-item" data-id="' + item.id + '">' +
+                '<div>' +
+                  '<a href="/ads-listing/" class="pl-cart-title">' + escapeHtml(item.title) + '</a>' +
+                  '<div class="pl-cart-meta"><strong style="color: #0f172a;">' + escapeHtml(item.price) + '</strong> &bull; Qty: ' + item.qty + ' &bull; ' + escapeHtml(item.condition) + '</div>' +
+                '</div>' +
+                '<button type="button" class="pl-cart-del" data-id="' + item.id + '" title="Remove item">' +
+                  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' +
+                '</button>' +
+              '</div>';
+            });
+            listEl.innerHTML = html;
+
+            listEl.querySelectorAll('.pl-cart-del').forEach(function (btn) {
+              btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var id = btn.getAttribute('data-id');
+                var remaining = getCartItems().filter(function (it) { return it.id !== id; });
+                saveCartItems(remaining);
+              });
+            });
+          }
+        }
+
+        function renderNotifications() {
+          var notifs = getNotifications();
+          var listEl = document.getElementById('plNotifList');
+          var emptyEl = document.getElementById('plNotifEmpty');
+          var badgeEl = document.getElementById('plNotifBadge');
+          var countTextEl = document.getElementById('plNotifCountText');
+
+          if (!listEl) return;
+
+          if (notifs.length === 0) {
+            listEl.innerHTML = '';
+            listEl.style.display = 'none';
+            if (emptyEl) emptyEl.style.display = 'block';
+            if (badgeEl) badgeEl.style.display = 'none';
+            if (countTextEl) countTextEl.textContent = '0';
+          } else {
+            listEl.style.display = 'block';
+            if (emptyEl) emptyEl.style.display = 'none';
+            if (badgeEl) {
+              badgeEl.style.display = 'inline-block';
+              badgeEl.textContent = notifs.length;
+            }
+            if (countTextEl) countTextEl.textContent = notifs.length;
+
+            var html = '';
+            notifs.forEach(function (n, index) {
+              if (index > 0) {
+                html += '<li class="pl-menu-divider"></li>';
+              }
+              html += '<li class="pl-notif-item" data-id="' + n.id + '">' +
+                '<a href="/ads-listing/" class="pl-menu-item" style="padding: 0; flex: 1; align-items: flex-start; gap: 10px;">' +
+                  '<span style="font-size: 16px;">' + n.icon + '</span>' +
+                  '<div>' +
+                    '<div style="font-size: 12px; font-weight: 700; color: #0f172a;">' + escapeHtml(n.title) + '</div>' +
+                    '<div style="font-size: 11px; color: #64748b;">' + escapeHtml(n.text) + '</div>' +
+                    '<div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">' + escapeHtml(n.time) + '</div>' +
+                  '</div>' +
+                '</a>' +
+                '<button type="button" class="pl-notif-del" data-id="' + n.id + '" title="Dismiss notification">&times;</button>' +
+              '</li>';
+            });
+            listEl.innerHTML = html;
+
+            listEl.querySelectorAll('.pl-notif-del').forEach(function (btn) {
+              btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var id = btn.getAttribute('data-id');
+                var remaining = getNotifications().filter(function (it) { return it.id !== id; });
+                saveNotifications(remaining);
+              });
+            });
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+          // 1. Initial Render from LocalStorage
+// renderCart removed
+          renderNotifications();
+
+          // 2. Dropdown Toggles
+          function setupDropdown(btnId, menuId) {
+            var btn = document.getElementById(btnId);
+            var menu = document.getElementById(menuId);
+            if (!btn || !menu) return;
+
+            btn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              document.querySelectorAll('.pl-menu').forEach(function (m) {
+                if (m !== menu) m.classList.remove('show');
+              });
+              menu.classList.toggle('show');
+            });
+          }
+
+          setupDropdown('plLocationBtn', 'plLocationMenu');
+          setupDropdown('plNotifBtn', 'plNotifMenu');
+// Cart removed - Wishlist is direct link
+          setupDropdown('plAccountBtn', 'plAccountMenu');
+
+          // Mobile Drawer
+          var mobileBtn = document.getElementById('plMobileToggleBtn');
+          var mobileDrawer = document.getElementById('pl-mobile-drawer');
+          if (mobileBtn && mobileDrawer) {
+            mobileBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              mobileDrawer.classList.toggle('show');
+            });
+          }
+
+          // 3. Category Dropdown Hover & Click Handlers with 2-Second Close Delay
+          var CAT_CLOSE_DELAY_MS = 2000;
+
+          document.querySelectorAll('.pl-cat-dropdown-wrap').forEach(function(wrap) {
+            var trigger = wrap.querySelector('.pl-cat-btn, #plAllCatBtn');
+            var menu = wrap.querySelector('.pl-cat-dropdown-menu, .pl-mega-menu');
+            if (!menu) return;
+
+            wrap.addEventListener('mouseenter', function() {
+              if (wrap._closeTimer) {
+                clearTimeout(wrap._closeTimer);
+                wrap._closeTimer = null;
+              }
+              document.querySelectorAll('.pl-cat-dropdown-wrap.is-open').forEach(function(other) {
+                if (other !== wrap) {
+                  if (other._closeTimer) {
+                    clearTimeout(other._closeTimer);
+                    other._closeTimer = null;
+                  }
+                  other.classList.remove('is-open');
+                }
+              });
+              wrap.classList.add('is-open');
+            });
+
+            wrap.addEventListener('mouseleave', function() {
+              if (wrap._closeTimer) {
+                clearTimeout(wrap._closeTimer);
+              }
+              wrap._closeTimer = setTimeout(function() {
+                wrap.classList.remove('is-open');
+                wrap._closeTimer = null;
+              }, CAT_CLOSE_DELAY_MS);
+            });
+
+            if (trigger) {
+              trigger.addEventListener('click', function(e) {
+                if (window.innerWidth > 991 && menu) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (wrap._closeTimer) {
+                    clearTimeout(wrap._closeTimer);
+                    wrap._closeTimer = null;
+                  }
+                  var wasOpen = wrap.classList.contains('is-open');
+                  document.querySelectorAll('.pl-cat-dropdown-wrap.is-open').forEach(function(w) {
+                    if (w._closeTimer) {
+                      clearTimeout(w._closeTimer);
+                      w._closeTimer = null;
+                    }
+                    w.classList.remove('is-open');
+                  });
+                  if (!wasOpen) {
+                    wrap.classList.add('is-open');
+                  }
+                }
+              });
+            }
+          });
+
+          // 4. Mobile Category Accordion Toggle
+          document.querySelectorAll('.pl-mobile-cat-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var targetId = btn.getAttribute('data-target');
+              var box = document.getElementById(targetId);
+              if (box) {
+                var isShown = box.classList.contains('show');
+                box.classList.toggle('show', !isShown);
+                btn.classList.toggle('open', !isShown);
+              }
+            });
+          });
+
+          // Close on outside click
+          document.addEventListener('click', function (e) {
+            document.querySelectorAll('.pl-menu').forEach(function (m) {
+              if (!m.contains(e.target)) {
+                m.classList.remove('show');
+              }
+            });
+            document.querySelectorAll('.pl-cat-dropdown-wrap.is-open').forEach(function (w) {
+              if (!w.contains(e.target)) {
+                if (w._closeTimer) {
+                  clearTimeout(w._closeTimer);
+                  w._closeTimer = null;
+                }
+                w.classList.remove('is-open');
+              }
+            });
+            if (mobileDrawer && !mobileDrawer.contains(e.target) && !mobileBtn.contains(e.target)) {
+              mobileDrawer.classList.remove('show');
+            }
+          });
+
+          // Clear & Reset Cart Buttons
+          var clearCartBtn = document.getElementById('plClearCartBtn');
+          if (clearCartBtn) {
+            clearCartBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              saveCartItems([]);
+            });
+          }
+          var resetCartBtn = document.getElementById('plResetCartBtn');
+          if (resetCartBtn) {
+            resetCartBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              saveCartItems(INITIAL_CART);
+            });
+          }
+
+          // Clear & Reset Notifications Buttons
+          var clearNotifBtn = document.getElementById('plClearNotifBtn');
+          if (clearNotifBtn) {
+            clearNotifBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              saveNotifications([]);
+            });
+          }
+          var resetNotifBtn = document.getElementById('plResetNotifBtn');
+          if (resetNotifBtn) {
+            resetNotifBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              saveNotifications(INITIAL_NOTIFICATIONS);
+            });
+          }
+        });
+      })();
+    </script>

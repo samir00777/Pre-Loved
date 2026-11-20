@@ -1,0 +1,822 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<!-- PreLoved Modern Hero Header -->
+<div class="pl-dashboard-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="pl-dashboard-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span>Leads &amp; Buyer Inquiries</span>
+        </div>
+        <h1 class="pl-dashboard-hero-title">Buyer Call Requests</h1>
+        <p class="pl-dashboard-hero-sub">Buyers who clicked <strong>"Request a Call"</strong> on your listings. Call them directly or connect via WhatsApp.</p>
+      </div>
+      <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
+        <a href="{% url 'profile-ads' %}" class="pl-hero-post-btn">
+          <span>View My Ads</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="pl-dashboard-content">
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar Column -->
+      {% include 'profiles/account-sidebar.html' %}
+
+      <!-- Main Column -->
+      <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="pl-dashboard-main">
+
+          <!-- 3 Stat Metrics -->
+          <div class="pl-stats-grid mb-2">
+            <!-- Total Requests -->
+            <div class="pl-stat-card pl-stat-indigo">
+              <div class="pl-stat-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </div>
+              <div class="pl-stat-info">
+                <div class="pl-stat-value">{{ call_requests.count }}</div>
+                <div class="pl-stat-label">Total Inquiries</div>
+                <div class="pl-stat-desc">All buyer callback requests</div>
+              </div>
+            </div>
+
+            <!-- Pending Requests -->
+            <div class="pl-stat-card pl-stat-amber">
+              <div class="pl-stat-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div class="pl-stat-info">
+                <div class="pl-stat-value" id="pendingStatCount">{{ unread_calls_count }}</div>
+                <div class="pl-stat-label">Pending Callback</div>
+                <div class="pl-stat-desc">Waiting for your contact</div>
+              </div>
+            </div>
+
+            <!-- Contacted Requests -->
+            <div class="pl-stat-card pl-stat-emerald">
+              <div class="pl-stat-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+              <div class="pl-stat-info">
+                <div class="pl-stat-value" id="contactedStatCount">{{ call_requests.count|add:"-"|add:unread_calls_count }}</div>
+                <div class="pl-stat-label">Contacted Leads</div>
+                <div class="pl-stat-desc">Successfully engaged buyers</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Table Card -->
+          <div class="pl-table-card">
+            
+            <!-- Card Header -->
+            <div class="pl-table-card-header">
+              <div class="pl-card-title-group">
+                <h2 class="pl-card-title">Incoming Call Inquiries</h2>
+                <span class="pl-card-badge" id="totalTableBadge">{{ call_requests.count }} Total</span>
+              </div>
+
+              <!-- Filter Pills -->
+              <div class="pl-filter-pills">
+                <button type="button" class="pl-filter-btn is-active" onclick="filterRequests('all', this);">All ({{ call_requests.count }})</button>
+                <button type="button" class="pl-filter-btn" onclick="filterRequests('pending', this);">Pending (<span id="filterPendingNum">{{ unread_calls_count }}</span>)</button>
+                <button type="button" class="pl-filter-btn" onclick="filterRequests('contacted', this);">Contacted</button>
+              </div>
+            </div>
+
+            <!-- Card Body / Table -->
+            {% if call_requests %}
+            <div class="table-responsive">
+              <table class="pl-modern-table">
+                <thead>
+                  <tr>
+                    <th style="width: 28%; min-width: 220px;">Buyer Contact</th>
+                    <th style="width: 26%; min-width: 200px;">Listing</th>
+                    <th style="width: 14%; min-width: 120px;">Preferred Time</th>
+                    <th style="width: 12%; min-width: 100px;">Received</th>
+                    <th style="width: 10%; min-width: 90px;">Status</th>
+                    <th style="width: 10%; min-width: 110px; text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for req in call_requests %}
+                  <tr id="req-row-{{ req.id }}" class="pl-req-row" data-status="{% if req.is_contacted %}contacted{% else %}pending{% endif %}">
+                    
+                    <!-- Buyer Cell -->
+                    <td>
+                      <div class="pl-buyer-cell">
+                        <div class="pl-buyer-avatar">
+                          {{ req.buyer_name|make_list|first|upper }}
+                        </div>
+                        <div class="pl-buyer-info">
+                          <div class="pl-buyer-name">{{ req.buyer_name }}</div>
+                          <div class="pl-contact-actions">
+                            <a href="tel:{{ req.buyer_phone }}" class="pl-btn-call" title="Click to Call">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                              <span>{{ req.buyer_phone }}</span>
+                            </a>
+                            <a href="https://wa.me/91{{ req.buyer_phone|cut:' '|cut:'-' }}?text=Hi%20{{ req.buyer_name }},%20I%20received%20your%20callback%20request%20for%20'{{ req.ad.title }}'%20on%20PreLoved." target="_blank" class="pl-btn-whatsapp" title="Chat on WhatsApp">
+                              <i class="lni-whatsapp"></i>
+                              <span>WhatsApp</span>
+                            </a>
+                          </div>
+                          {% if req.message %}
+                          <div class="pl-buyer-quote" title="{{ req.message }}">
+                            "{{ req.message }}"
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </td>
+
+                    <!-- Ad Listing Cell -->
+                    <td>
+                      <div class="pl-ad-cell">
+                        <div class="pl-ad-thumb-wrap">
+                          {% if req.ad.adsimages_set.first %}
+                            <img src="{{ req.ad.adsimages_set.first.image.url }}" alt="{{ req.ad.title }}" class="pl-ad-thumb">
+                          {% else %}
+                            <div class="pl-ad-thumb-placeholder">
+                              <i class="lni-image"></i>
+                            </div>
+                          {% endif %}
+                        </div>
+                        <div class="pl-ad-meta">
+                          <a href="{% url 'ads-detail' pk=req.ad.pk %}" class="pl-ad-link" target="_blank" title="{{ req.ad.title }}">
+                            {{ req.ad.title }}
+                          </a>
+                          <div class="pl-ad-price">₹{{ req.ad.price|intcomma }}</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <!-- Preferred Time -->
+                    <td>
+                      <div class="pl-time-pill">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>{{ req.preferred_time }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Received Date -->
+                    <td>
+                      <div class="pl-date-text">{{ req.created_at|naturaltime }}</div>
+                      <div class="pl-date-sub">{{ req.created_at|date:"d M, H:i" }}</div>
+                    </td>
+
+                    <!-- Status Badge -->
+                    <td>
+                      <div id="status-pill-{{ req.id }}" class="pl-status-pill {% if req.is_contacted %}is-contacted{% else %}is-pending{% endif %}">
+                        <span class="pl-status-dot"></span>
+                        <span class="pl-status-text">{% if req.is_contacted %}Contacted{% else %}Pending Call{% endif %}</span>
+                      </div>
+                    </td>
+
+                    <!-- Toggle Action -->
+                    <td style="text-align: right;">
+                      <button type="button" class="pl-action-btn {% if req.is_contacted %}is-reset{% else %}is-done{% endif %}" onclick="toggleContactStatus({{ req.id }});" id="toggle-btn-{{ req.id }}">
+                        <span class="pl-btn-icon">
+                          {% if req.is_contacted %}
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                          {% else %}
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                          {% endif %}
+                        </span>
+                        <span class="pl-btn-label">{% if req.is_contacted %}Mark Pending{% else %}Mark Contacted{% endif %}</span>
+                      </button>
+                    </td>
+
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <!-- Clean Empty State -->
+            <div class="pl-empty-state">
+              <div class="pl-empty-icon-wrap">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </div>
+              <h3 class="pl-empty-title">No Call Requests Yet</h3>
+              <p class="pl-empty-desc">
+                When buyers browse your active listings and click <strong>"Request a Call"</strong>, their contact details and preferences will appear here in real time.
+              </p>
+              <a href="{% url 'profile-ads' %}" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 10px;">
+                Manage Active Listings &rarr;
+              </a>
+            </div>
+            {% endif %}
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* =====================================================================
+     PreLoved Call Requests & Inquiries Styling
+     ===================================================================== */
+  .pl-dashboard-hero {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #064e3b 100%);
+    padding: 120px 0 45px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .pl-dashboard-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #a7f3d0;
+    margin-bottom: 10px;
+  }
+  .pl-dashboard-hero-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .pl-dashboard-hero-sub {
+    font-size: 14px;
+    color: #cbd5e1;
+    margin: 0;
+    max-width: 620px;
+  }
+  .pl-dashboard-hero-sub strong {
+    color: #ffffff;
+  }
+  .pl-hero-post-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #059669;
+    color: #ffffff !important;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 11px 22px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+    transition: all 0.2s ease;
+  }
+  .pl-hero-post-btn:hover {
+    background: #047857;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.45);
+  }
+
+  .pl-dashboard-content {
+    padding-bottom: 60px;
+  }
+  .pl-dashboard-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* 3 Metric Cards Grid */
+  .pl-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 768px) {
+    .pl-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .pl-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s ease;
+  }
+  .pl-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  }
+  .pl-stat-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pl-stat-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .pl-stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .pl-stat-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 2px;
+  }
+  .pl-stat-desc {
+    font-size: 11.5px;
+    color: #64748b;
+  }
+  .pl-stat-indigo .pl-stat-icon-wrap {
+    background: #eef2ff;
+    color: #4f46e5;
+  }
+  .pl-stat-amber .pl-stat-icon-wrap {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  .pl-stat-emerald .pl-stat-icon-wrap {
+    background: #ecfdf5;
+    color: #059669;
+  }
+
+  /* Main Table Card */
+  .pl-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
+  .pl-table-card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .pl-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pl-card-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .pl-card-badge {
+    padding: 4px 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  /* Filter Pills */
+  .pl-filter-pills {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 10px;
+  }
+  .pl-filter-btn {
+    border: none;
+    background: transparent;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #64748b;
+    padding: 5px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .pl-filter-btn:hover {
+    color: #0f172a;
+  }
+  .pl-filter-btn.is-active {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Modern Table */
+  .pl-modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .pl-modern-table thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 13px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    border-top: none;
+    white-space: nowrap;
+  }
+  .pl-modern-table tbody tr {
+    transition: background 0.15s ease;
+  }
+  .pl-modern-table tbody tr:hover {
+    background: #f8fafc;
+  }
+  .pl-modern-table tbody td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  .pl-modern-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Buyer Cell */
+  .pl-buyer-cell {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .pl-buyer-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+  }
+  .pl-buyer-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .pl-buyer-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+  .pl-contact-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pl-btn-call {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #2563eb;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+  }
+  .pl-btn-call:hover {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+  .pl-btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #ffffff;
+    background: #10b981;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+  }
+  .pl-btn-whatsapp:hover {
+    background: #059669;
+    color: #ffffff;
+  }
+  .pl-buyer-quote {
+    margin-top: 6px;
+    font-size: 11.5px;
+    color: #475569;
+    background: #f8fafc;
+    border-left: 2px solid #cbd5e1;
+    padding: 3px 8px;
+    border-radius: 0 6px 6px 0;
+    font-style: italic;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Ad Cell */
+  .pl-ad-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pl-ad-thumb-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f1f5f9;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+  }
+  .pl-ad-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pl-ad-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 16px;
+  }
+  .pl-ad-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .pl-ad-link {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0f172a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.35;
+    text-decoration: none !important;
+  }
+  .pl-ad-link:hover {
+    color: #4f46e5;
+  }
+  .pl-ad-price {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #059669;
+    margin-top: 2px;
+  }
+
+  /* Preferred Time Pill */
+  .pl-time-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f8fafc;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* Date Text */
+  .pl-date-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    white-space: nowrap;
+  }
+  .pl-date-sub {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  /* Status Pill */
+  .pl-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pl-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .pl-status-pill.is-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+  .pl-status-pill.is-pending .pl-status-dot {
+    background: #d97706;
+  }
+  .pl-status-pill.is-contacted {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  .pl-status-pill.is-contacted .pl-status-dot {
+    background: #059669;
+  }
+
+  /* Action Button */
+  .pl-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .pl-action-btn.is-done {
+    background: #059669;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+  }
+  .pl-action-btn.is-done:hover {
+    background: #047857;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.35);
+  }
+  .pl-action-btn.is-reset {
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+  }
+  .pl-action-btn.is-reset:hover {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #94a3b8;
+  }
+
+  /* Empty State */
+  .pl-empty-state {
+    padding: 60px 24px;
+    text-align: center;
+  }
+  .pl-empty-icon-wrap {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #ecfdf5;
+    color: #059669;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .pl-empty-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+  .pl-empty-desc {
+    font-size: 14px;
+    color: #64748b;
+    max-width: 440px;
+    margin: 0 auto 20px;
+    line-height: 1.5;
+  }
+</style>
+
+<script>
+function toggleContactStatus(reqId) {
+  const btn = document.getElementById('toggle-btn-' + reqId);
+  const pill = document.getElementById('status-pill-' + reqId);
+  const row = document.getElementById('req-row-' + reqId);
+  if (!btn) return;
+  
+  btn.disabled = true;
+  fetch('/call-requests/' + reqId + '/toggle/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    btn.disabled = false;
+    if (data.status === 'success') {
+      const isContacted = data.is_contacted;
+      if (row) {
+        row.setAttribute('data-status', isContacted ? 'contacted' : 'pending');
+      }
+
+      if (pill) {
+        if (isContacted) {
+          pill.className = 'pl-status-pill is-contacted';
+          pill.querySelector('.pl-status-text').textContent = 'Contacted';
+        } else {
+          pill.className = 'pl-status-pill is-pending';
+          pill.querySelector('.pl-status-text').textContent = 'Pending Call';
+        }
+      }
+
+      if (btn) {
+        if (isContacted) {
+          btn.className = 'pl-action-btn is-reset';
+          btn.innerHTML = '<span class="pl-btn-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></span><span class="pl-btn-label">Mark Pending</span>';
+        } else {
+          btn.className = 'pl-action-btn is-done';
+          btn.innerHTML = '<span class="pl-btn-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="pl-btn-label">Mark Contacted</span>';
+        }
+      }
+
+      const pendingStat = document.getElementById('pendingStatCount');
+      if (pendingStat && data.unread_count !== undefined) {
+        pendingStat.textContent = data.unread_count;
+      }
+      const filterPendingNum = document.getElementById('filterPendingNum');
+      if (filterPendingNum && data.unread_count !== undefined) {
+        filterPendingNum.textContent = data.unread_count;
+      }
+    }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    console.error('Failed to update status', err);
+  });
+}
+
+function filterRequests(filterType, btn) {
+  document.querySelectorAll('.pl-filter-btn').forEach(b => b.classList.remove('is-active'));
+  if (btn) btn.classList.add('is-active');
+
+  const rows = document.querySelectorAll('.pl-req-row');
+  rows.forEach(row => {
+    const status = row.getAttribute('data-status');
+    if (filterType === 'all') {
+      row.style.display = '';
+    } else if (filterType === 'pending') {
+      row.style.display = (status === 'pending') ? '' : 'none';
+    } else if (filterType === 'contacted') {
+      row.style.display = (status === 'contacted') ? '' : 'none';
+    }
+  });
+}
+</script>
+{% endblock %}

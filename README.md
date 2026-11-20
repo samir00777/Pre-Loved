@@ -94,8 +94,8 @@ flowchart LR
 ### Installation
 ```bash
 # 1. Clone repository
-git clone https://github.com/brainybeamGit/PreLoved-Django-P1.git
-cd PreLoved-Django-P1
+git clone https://github.com/samir00777/Pre-Loved.git
+cd Pre-Loved
 
 # 2. Create virtual environment
 python -m venv venv
@@ -103,12 +103,15 @@ venv\Scripts\activate   # On Windows
 source venv/bin/activate # On macOS/Linux
 
 # 3. Install dependencies
-pip install django pillow
+pip install -r requirements.txt
 
-# 4. Apply migrations
+# 4. Copy environment configuration
+copy .env.example .env   # On Windows (or cp .env.example .env on Linux/macOS)
+
+# 5. Apply migrations
 python manage.py migrate
 
-# 5. Start development server
+# 6. Start development server
 python manage.py runserver
 ```
 Visit `http://127.0.0.1:8000` to access the application.

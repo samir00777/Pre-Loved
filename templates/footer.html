@@ -1,0 +1,640 @@
+{% load static humanize %}
+<!-- PreLoved Modern Master Footer -->
+<footer class="pl-master-footer">
+
+  <!-- 1. Benefits Comparison Strip: Why PreLoved vs Others -->
+  <div class="pl-footer-benefits-strip">
+    <div class="container">
+      <div class="row">
+        <!-- Benefit 1 -->
+        <div class="col-lg-3 col-sm-6 mb-3 mb-lg-0">
+          <div class="pl-benefit-box">
+            <div class="pl-benefit-icon pl-benefit-emerald">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="pl-benefit-content">
+              <div class="pl-benefit-title">0% Brokerage, Always Free</div>
+              <div class="pl-benefit-sub">Other sites take 10-20% cuts. We take absolutely zero.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefit 2 -->
+        <div class="col-lg-3 col-sm-6 mb-3 mb-lg-0">
+          <div class="pl-benefit-box">
+            <div class="pl-benefit-icon pl-benefit-indigo">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+            </div>
+            <div class="pl-benefit-content">
+              <div class="pl-benefit-title">Verified RC &amp; Phone Check</div>
+              <div class="pl-benefit-sub">Real Indian sellers with authentic vehicle records. No ghosts.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefit 3 -->
+        <div class="col-lg-3 col-sm-6 mb-3 mb-lg-0">
+          <div class="pl-benefit-box">
+            <div class="pl-benefit-icon pl-benefit-amber">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="pl-benefit-content">
+              <div class="pl-benefit-title">Direct WhatsApp &amp; Call</div>
+              <div class="pl-benefit-sub">Talk directly with owners. No annoying bot middlemen.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefit 4 -->
+        <div class="col-lg-3 col-sm-6">
+          <div class="pl-benefit-box">
+            <div class="pl-benefit-icon pl-benefit-violet">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="pl-benefit-content">
+              <div class="pl-benefit-title">Instant 60-Sec Ad Posting</div>
+              <div class="pl-benefit-sub">No endless approval queues, spam filters, or paywalls.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Main Footer Content Columns -->
+  <section class="footer-Content pl-footer-main">
+    <div class="container">
+      <div class="row">
+
+        <!-- Column 1: Brand & Personally Touching Tagline -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4 mb-lg-0">
+          <div class="widget">
+            <a href="{% url 'home' %}" class="pl-footer-brand">
+              <div class="pl-footer-logo-wrap">
+                <img src="{% static 'images/site-logo.png' %}" alt="PreLoved Logo" class="pl-footer-logo-img">
+              </div>
+              <div>
+                <h3 class="pl-footer-logo-text"><span class="pl-accent">Pre</span>Loved</h3>
+                <span class="pl-footer-logo-sub">Second-Hand Goods Marketplace</span>
+              </div>
+            </a>
+            
+            <!-- Touching Personal Tagline -->
+            <div class="pl-footer-tagline">
+              &ldquo;Everything here was once someone&rsquo;s pride, dream, or hard-earned savings. Old things hold memories, not expiration dates&mdash;give what you once loved a deserving second life.&rdquo;
+            </div>
+
+            <div class="pl-footer-trust-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+              <span>India&rsquo;s Community-First Classifieds</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Latest Ads (Preserved per request) -->
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-4 mb-lg-0">
+          <div class="widget">
+            <h3 class="block-title pl-footer-heading">Latest Ads</h3>
+            <ul class="media-content-list pl-footer-ads-list">
+              {% for ad in footer_recent_ads %}
+              <li class="pl-footer-ad-item">
+                <a href="{% url 'ads-detail' ad.id %}" class="pl-footer-ad-thumb">
+                  {% with img=ad.adsimages_set.first %}
+                    {% if img and img.image %}
+                      <img src="{{ img.image.url }}" alt="{{ ad.title }}">
+                    {% else %}
+                      <img src="{% static 'images/site-logo.png' %}" alt="{{ ad.title }}">
+                    {% endif %}
+                  {% endwith %}
+                </a>
+                <div class="media-body pl-footer-ad-body">
+                  <h4 class="post-title pl-footer-ad-title">
+                    <a href="{% url 'ads-detail' ad.id %}">{{ ad.title }}</a>
+                  </h4>
+                  <div class="pl-footer-ad-price">&#8377;{{ ad.price|floatformat:0|intcomma }}</div>
+                  <div class="pl-footer-ad-date">{{ ad.date_created|date:"M d, Y" }}</div>
+                </div>
+              </li>
+              {% empty %}
+              <li style="color: #94a3b8; font-size: 13px;">No recent ads found.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 3: Why PreLoved & Help Support -->
+        <div class="col-lg-2 col-md-6 col-sm-6 mb-4 mb-lg-0">
+          <div class="widget">
+            <h3 class="block-title pl-footer-heading">Why PreLoved</h3>
+            <ul class="menu pl-footer-nav-menu">
+              <li>
+                <a href="{% url 'ads-listing' %}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  <span>Explore All Ads</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'post-ads' %}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  <span>Post Free Ad</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'faq' %}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  <span>Buyer &amp; Seller FAQ</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'terms-of-service' %}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  <span>Privacy Policy</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'contact' %}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  <span>Contact Support</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 4: Connect With Us (Funny Dark Quote + Secret Social Links) -->
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="widget">
+            <h3 class="block-title pl-footer-heading">Connect with us</h3>
+            
+            <!-- Funny, Dark & Personally Touching 2-Line Support Statement -->
+            <div class="pl-dark-quote-box">
+              <p class="pl-dark-quote-p">
+                &ldquo;Our agents are available 24/7 because let&rsquo;s face it&mdash;neither of us can sleep with our thoughts anyway.
+              </p>
+              <p class="pl-dark-quote-p" style="margin-top: 6px;">
+                Sell your stuff before your regrets outlive your warranties. At least your wallet won&rsquo;t be as empty as your promises.&rdquo;
+              </p>
+            </div>
+
+            <!-- Social Media Channels (All 4 link to uploaded picture on new tab) -->
+            <div class="pl-social-section-title">Visit Our Socials</div>
+            <ul class="footer-social pl-footer-social-grid">
+              <!-- Facebook -->
+              <li>
+                <a class="pl-social-btn pl-soc-fb" target="_blank" rel="noopener noreferrer" href="{% static 'images/secret_social_media.jpg' %}" title="Connect on Facebook (Click to view)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </a>
+              </li>
+
+              <!-- X (formerly Twitter) -->
+              <li>
+                <a class="pl-social-btn pl-soc-x" target="_blank" rel="noopener noreferrer" href="{% static 'images/secret_social_media.jpg' %}" title="Connect on X (Click to view)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+              </li>
+
+              <!-- LinkedIn (in) -->
+              <li>
+                <a class="pl-social-btn pl-soc-in" target="_blank" rel="noopener noreferrer" href="{% static 'images/secret_social_media.jpg' %}" title="Connect on LinkedIn (Click to view)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+              </li>
+
+              <!-- Google+ (G+) -->
+              <li>
+                <a class="pl-social-btn pl-soc-gp" target="_blank" rel="noopener noreferrer" href="{% static 'images/secret_social_media.jpg' %}" title="Connect on Google+ (Click to view)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10v4h4.3c-.6 2.3-2.6 3.5-4.3 3.5-2.8 0-5-2.2-5-5s2.2-5 5-5c1.3 0 2.4.5 3.3 1.3l2.8-2.8C11.6 4.6 9.5 3.8 7 3.8 3.1 3.8 0 7 0 10.9s3.1 7.1 7 7.1c4.1 0 6.8-2.9 6.8-6.9 0-.6-.1-1.1-.2-1.6H7v.5zm14-1v-3h-2v3h-3v2h3v3h2v-3h3V9h-3z"/></svg>
+                </a>
+              </li>
+            </ul>          
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- Footer Main End -->
+  
+  <!-- 3. Bottom Copyright & Admin Login Bar -->
+  <div id="copyright" class="pl-copyright-wrapper">
+    <div class="container">
+      <div class="row align-items-center">
+        <!-- Copyright Info -->
+        <div class="col-md-6 text-center text-md-left mb-2 mb-md-0">
+          <div class="site-info">
+            <p class="pl-copyright-text">
+              Copyright &copy; {% now "Y" %} <span style="color: #ffffff; font-weight: 700;">PreLoved.com</span> &bull; All rights reserved.
+            </p>
+          </div>              
+        </div>
+
+        <!-- Admin Portal CTA & Creator Signature -->
+        <div class="col-md-6 text-center text-md-right">
+          <div class="pl-copyright-actions">
+            <span class="pl-team-credit">Developed by <strong>PreLoved Team</strong></span>
+            
+            <!-- Sleek Admin Login Button in Footer -->
+            <a href="{% url 'custom_admin:login' %}" class="pl-footer-admin-btn" title="Superuser &amp; Staff Admin Console">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <span>Admin Login</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</footer>
+<!-- Footer Section End -->
+
+<!-- Scoped Modern Footer Stylesheet -->
+<style>
+  .pl-master-footer {
+    background: #090d16;
+    color: #cbd5e1;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 1. Benefits Strip */
+  .pl-footer-benefits-strip {
+    background: #0d1322;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 30px 0;
+  }
+  .pl-benefit-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 8px 4px;
+  }
+  .pl-benefit-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+  .pl-benefit-emerald {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  .pl-benefit-indigo {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+  .pl-benefit-amber {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  .pl-benefit-violet {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
+  .pl-benefit-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 3px;
+    letter-spacing: -0.01em;
+  }
+  .pl-benefit-sub {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+
+  /* 2. Main Footer Body */
+  .pl-footer-main {
+    padding: 55px 0 45px;
+  }
+  .pl-footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none !important;
+    margin-bottom: 16px;
+  }
+  .pl-footer-logo-wrap {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 4px 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  .pl-footer-logo-img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .pl-footer-logo-text {
+    font-weight: 800;
+    font-size: 22px;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .pl-footer-logo-text .pl-accent {
+    color: #6366f1;
+  }
+  .pl-footer-logo-sub {
+    font-size: 10px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    display: block;
+  }
+  .pl-footer-tagline {
+    font-size: 13.5px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .pl-footer-trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #a5b4fc;
+  }
+
+  /* Footer Headings */
+  .pl-footer-heading {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 20px !important;
+    position: relative;
+    padding-bottom: 8px;
+  }
+  .pl-footer-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 28px;
+    height: 2.5px;
+    background: #4f46e5;
+    border-radius: 2px;
+  }
+
+  /* Latest Ads List */
+  .pl-footer-ads-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .pl-footer-ad-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .pl-footer-ad-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: block;
+  }
+  .pl-footer-ad-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+  }
+  .pl-footer-ad-thumb:hover img {
+    transform: scale(1.08);
+  }
+  .pl-footer-ad-body {
+    flex-grow: 1;
+    min-width: 0;
+  }
+  .pl-footer-ad-title {
+    margin: 0 0 3px 0 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pl-footer-ad-title a {
+    color: #f1f5f9 !important;
+    text-decoration: none !important;
+    transition: color 0.15s ease;
+  }
+  .pl-footer-ad-title a:hover {
+    color: #818cf8 !important;
+  }
+  .pl-footer-ad-price {
+    color: #38bdf8;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .pl-footer-ad-date {
+    color: #64748b;
+    font-size: 11px;
+  }
+
+  /* Nav Links Menu */
+  .pl-footer-nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pl-footer-nav-menu li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+  }
+  .pl-footer-nav-menu li a svg {
+    color: #6366f1;
+    transition: transform 0.15s ease;
+  }
+  .pl-footer-nav-menu li a:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+  }
+  .pl-footer-nav-menu li a:hover svg {
+    transform: translateX(2px);
+  }
+
+  /* Funny Dark Quote Box */
+  .pl-dark-quote-box {
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid #6366f1;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  }
+  .pl-dark-quote-p {
+    margin: 0;
+    font-size: 12.5px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .pl-social-section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  /* Social Icons Grid (All open secret image on click) */
+  .pl-footer-social-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pl-social-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e293b;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .pl-social-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  }
+  .pl-soc-fb:hover {
+    background: #1877f2;
+    color: #ffffff !important;
+    border-color: #1877f2;
+  }
+  .pl-soc-x:hover {
+    background: #000000;
+    color: #ffffff !important;
+    border-color: #334155;
+  }
+  .pl-soc-in:hover {
+    background: #0a66c2;
+    color: #ffffff !important;
+    border-color: #0a66c2;
+  }
+  .pl-soc-gp:hover {
+    background: #ea4335;
+    color: #ffffff !important;
+    border-color: #ea4335;
+  }
+
+  /* 3. Bottom Copyright & Admin Login Bar */
+  .pl-copyright-wrapper {
+    background: #04070e;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 16px 0;
+  }
+  .pl-copyright-text {
+    font-size: 13px;
+    color: #94a3b8;
+    margin: 0;
+  }
+  .pl-copyright-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .pl-team-credit {
+    font-size: 12.5px;
+    color: #64748b;
+  }
+  .pl-team-credit strong {
+    color: #94a3b8;
+  }
+
+  /* Admin Login Button */
+  .pl-footer-admin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    border-radius: 9999px;
+    color: #c7d2fe !important;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+  }
+  .pl-footer-admin-btn:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  }
+</style>
+
+<!-- Go to Top Link -->
+<a href="#" class="back-to-top">
+  <i class="lni-chevron-up"></i>
+</a>
+
+<!-- Core JS Assets -->
+<script src="{% static 'js/jquery-min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+<script src="{% static 'js/waypoints.min.js' %}"></script>
+<script src="{% static 'js/wow.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/nivo-lightbox.js' %}"></script>
+<script src="{% static 'js/jquery.slicknav.js' %}"></script>
+<script src="{% static 'js/form-validator.min.js' %}"></script>
+<script src="{% static 'js/contact-form-script.min.js' %}"></script>
+<script src="{% static 'js/summernote.js' %}"></script>
+<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+<script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+<script src="{% static 'js/main.js' %}"></script>

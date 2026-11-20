@@ -1,0 +1,39 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# Environment Variables & Secrets
+.env
+.env.local
+
+# Temporary caches, notes & generator scripts
+img_cache/
+notepad
+login_signup.txt
+navbar.txt
+seed_*.py
+catalog_*.py
+verify_*.py
+build_*.py
+download_*.py
+*.docx
+
+# Static collection
+staticfiles/
+
+# IDE / OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

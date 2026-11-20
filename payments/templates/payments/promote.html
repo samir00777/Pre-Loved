@@ -1,0 +1,540 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<!-- PreLoved Promotion Hero -->
+<div class="pl-promote-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="pl-promote-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>PreLoved Verified Accelerator</span>
+        </div>
+        <h1 class="pl-promote-hero-title">Boost &amp; Feature Your Listing</h1>
+        <p class="pl-promote-hero-sub">Get up to <strong>5x more inquiries</strong> and top-of-page prominence across search, categories, and homepage.</p>
+      </div>
+      <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
+        <a href="{% url 'dashboard' %}" class="pl-hero-back-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Pricing Content -->
+<div class="pl-promote-content">
+  <div class="container">
+
+    <!-- Selected Ad Preview Banner -->
+    <div class="pl-target-ad-card mb-5">
+      <div class="row align-items-center">
+        <div class="col-md-2 col-sm-3 col-4">
+          <div class="pl-target-thumb-wrap">
+            {% if ad.adsimages_set.first %}
+              <img src="{{ ad.adsimages_set.first.image.url }}" alt="{{ ad.title }}" class="pl-target-thumb" onerror="this.onerror=null; this.src='{% static 'images/site-logo.png' %}';">
+            {% else %}
+              <img src="{% static 'images/site-logo.png' %}" alt="{{ ad.title }}" class="pl-target-thumb">
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-7 col-sm-6 col-8">
+          <span class="pl-target-label">PROMOTING LISTING #{{ ad.id }}</span>
+          <h3 class="pl-target-title">{{ ad.title }}</h3>
+          <div class="pl-target-meta">
+            <span class="pl-target-price">&#8377;{{ ad.price|floatformat:0|intcomma }}</span>
+            <span class="pl-meta-dot">&bull;</span>
+            <span>{{ ad.category.category_name }}</span>
+            {% if ad.city %}
+              <span class="pl-meta-dot">&bull;</span>
+              <span>{{ ad.city.city_name }}</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-3 col-12 text-md-right mt-3 mt-md-0">
+          {% if ad.is_featured %}
+            <span class="pl-status-featured-pill">Currently Featured</span>
+            {% if ad.featured_until %}
+              <div class="small text-muted mt-1">Until {{ ad.featured_until|date:"M d, Y" }}</div>
+            {% endif %}
+          {% else %}
+            <span class="pl-status-standard-pill">Standard Listing</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Box for AJAX messages -->
+    <div id="payment-alert-box" class="mb-4" style="display: none;"></div>
+
+    <!-- 3 Pricing Cards Grid -->
+    <div class="row justify-content-center">
+      {% for plan in plans %}
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="pl-pricing-card {% if plan.is_popular %}is-popular-card{% endif %}">
+            {% if plan.is_popular %}
+              <div class="pl-popular-ribbon">Most Popular</div>
+            {% endif %}
+
+            <div class="pl-plan-header">
+              <span class="pl-plan-badge">{{ plan.badge_label|default:"Feature" }}</span>
+              <h3 class="pl-plan-name">{{ plan.name }}</h3>
+              <p class="pl-plan-desc">{{ plan.description }}</p>
+            </div>
+
+            <div class="pl-plan-pricing">
+              <div class="pl-price-figure">
+                <span class="pl-curr">&#8377;</span>
+                <span class="pl-amt">{{ plan.price_inr|floatformat:0 }}</span>
+              </div>
+              <span class="pl-period">for {{ plan.duration_days }} days duration</span>
+            </div>
+
+            <ul class="pl-features-list">
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Gold <strong>Featured Badge</strong> on ad thumbnail</span>
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Ranked above all standard classifieds</span>
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Homepage carousel inclusion</span>
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Priority buyer notifications</span>
+              </li>
+            </ul>
+
+            <button type="button" class="pl-promote-btn {% if plan.is_popular %}btn-popular{% endif %}" onclick="startPromotion({{ ad.id }}, {{ plan.id }}, '{{ plan.name|escapejs }}', {{ plan.price_inr|floatformat:0 }})">
+              <span>Boost Now &bull; &#8377;{{ plan.price_inr|floatformat:0 }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<!-- Razorpay Official Checkout SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+  .pl-promote-hero {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+    padding: 120px 0 45px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-promote-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .pl-promote-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fbbf24;
+    padding: 4px 14px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .pl-promote-hero-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .pl-promote-hero-sub {
+    font-size: 15px;
+    color: #cbd5e1;
+    margin: 0;
+  }
+  .pl-hero-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff !important;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+  }
+  .pl-hero-back-btn:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    transform: translateY(-2px);
+  }
+
+  .pl-promote-content {
+    background: #f8fafc;
+    padding-bottom: 80px;
+  }
+
+  /* Target Ad Preview Card */
+  .pl-target-ad-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 24px;
+    box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+  }
+  .pl-target-thumb-wrap {
+    width: 100%;
+    height: 80px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f1f5f9;
+  }
+  .pl-target-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pl-target-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6366f1;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .pl-target-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 2px 0 4px;
+    line-height: 1.3;
+  }
+  .pl-target-meta {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pl-target-price {
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .pl-status-featured-pill {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+  }
+  .pl-status-standard-pill {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  /* Pricing Cards */
+  .pl-pricing-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 32px 28px;
+    position: relative;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .pl-pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.12);
+  }
+  .pl-pricing-card.is-popular-card {
+    border: 2px solid #6366f1;
+    box-shadow: 0 8px 30px -4px rgba(99, 102, 241, 0.18);
+  }
+  .pl-popular-ribbon {
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: #ffffff;
+    padding: 4px 14px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  }
+  .pl-plan-badge {
+    display: inline-block;
+    background: #eef2ff;
+    color: #4f46e5;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .pl-plan-name {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+  .pl-plan-desc {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 16px;
+    min-height: 38px;
+  }
+  .pl-plan-pricing {
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 16px 0;
+    margin-bottom: 20px;
+  }
+  .pl-price-figure {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .pl-curr {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .pl-amt {
+    font-size: 34px;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1;
+  }
+  .pl-period {
+    font-size: 12.5px;
+    color: #64748b;
+  }
+  .pl-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    flex: 1;
+  }
+  .pl-features-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: #334155;
+    margin-bottom: 10px;
+  }
+  .pl-features-list li svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .pl-promote-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .pl-promote-btn:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  }
+  .pl-promote-btn.btn-popular {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+  }
+  .pl-promote-btn.btn-popular:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+  }
+</style>
+
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function startPromotion(adId, planId, planName, amountInr) {
+    var alertBox = document.getElementById('payment-alert-box');
+    var csrftoken = getCookie('csrftoken');
+
+    if (alertBox) {
+      alertBox.style.display = 'block';
+      alertBox.className = 'alert alert-info d-flex align-items-center gap-2';
+      alertBox.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span>Initializing secure payment for <strong>${planName}</strong>...</span>
+      `;
+    }
+
+    // Call create order endpoint
+    fetch(`/payments/order/create/${adId}/${planId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrftoken,
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(function(res) {
+      return res.json().then(function(data) {
+        return { ok: res.ok, data: data };
+      });
+    })
+    .then(function(result) {
+      if (!result.ok || result.data.status !== 'success') {
+        throw new Error(result.data.message || 'Could not initiate payment order.');
+      }
+
+      var orderData = result.data;
+
+      // Check if real Razorpay or Sandbox
+      if (typeof Razorpay !== 'undefined' && orderData.key && !orderData.is_sandbox) {
+        var options = {
+          "key": orderData.key,
+          "amount": orderData.amount,
+          "currency": orderData.currency,
+          "name": "PreLoved India",
+          "description": "Featured Ad Upgrade - " + planName,
+          "image": "{% static 'images/site-logo.png' %}",
+          "order_id": orderData.order_id,
+          "handler": function (response) {
+            verifyPaymentOnServer(response.razorpay_order_id, response.razorpay_payment_id, response.razorpay_signature);
+          },
+          "prefill": {
+            "name": "{{ request.user.get_full_name|default:request.user.username }}",
+            "email": "{{ request.user.email }}"
+          },
+          "theme": {
+            "color": "#4f46e5"
+          }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+      } else {
+        // Sandbox Simulation Mode (works seamlessly for testing without live credentials)
+        if (confirm("Test Payment Simulator:\n\nOrder ID: " + orderData.order_id + "\nAmount: ₹" + amountInr + "\nPlan: " + planName + "\n\nClick OK to simulate successful payment verification, or Cancel to abort.")) {
+          verifyPaymentOnServer(orderData.order_id, "pay_sim_" + Date.now(), "sim_sig");
+        } else {
+          if (alertBox) alertBox.style.display = 'none';
+        }
+      }
+    })
+    .catch(function(err) {
+      if (alertBox) {
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = err.message || 'Payment initiation failed. Please try again.';
+      }
+    });
+  }
+
+  function verifyPaymentOnServer(orderId, paymentId, signature) {
+    var alertBox = document.getElementById('payment-alert-box');
+    var csrftoken = getCookie('csrftoken');
+
+    if (alertBox) {
+      alertBox.className = 'alert alert-info d-flex align-items-center gap-2';
+      alertBox.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span>Verifying transaction and activating Featured status...</span>
+      `;
+    }
+
+    var formData = new FormData();
+    formData.append('razorpay_order_id', orderId);
+    formData.append('razorpay_payment_id', paymentId);
+    formData.append('razorpay_signature', signature);
+
+    fetch('/payments/verify/', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': csrftoken,
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(function(res) {
+      return res.json().then(function(data) {
+        return { ok: res.ok, data: data };
+      });
+    })
+    .then(function(result) {
+      if (result.ok && result.data.status === 'success') {
+        if (alertBox) {
+          alertBox.className = 'alert alert-success d-flex align-items-center gap-2';
+          alertBox.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>${result.data.message} Redirecting to your listing...</span>
+          `;
+        }
+        setTimeout(function() {
+          window.location.href = result.data.redirect_url || "{% url 'dashboard' %}";
+        }, 1200);
+      } else {
+        throw new Error(result.data.message || 'Verification failed.');
+      }
+    })
+    .catch(function(err) {
+      if (alertBox) {
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = err.message || 'Could not verify payment.';
+      }
+    });
+  }
+</script>
+{% endblock %}
