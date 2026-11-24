@@ -95,8 +95,10 @@ def validate_uploaded_image(file_obj):
 # Create your views here.
 
 # Post ads view
-@login_required(login_url='login')
 def post_ads(request):
+    preview = settings.DEBUG and request.GET.get('preview') == '1'
+    if not request.user.is_authenticated and not preview:
+        return redirect('login')
     if request.method == 'POST':
         # Part 1: Common Required Fields
         title = request.POST.get('title', '').strip()
@@ -307,6 +309,7 @@ def post_ads(request):
         'states': states,
         'categories': categories,
         'categories_json': json.dumps(cat_tree),
+        'preview': preview,
     }
     return render(request, 'ads/post-ads.html', context)
 

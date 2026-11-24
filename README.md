@@ -19,24 +19,30 @@ Browse active listings with dynamic price displays, condition pills, and categor
 ---
 
 ### 3. Listing Detail Page with "Request a Call" Lead System
-Structured technical specifications, seller profile verification, and direct callback routing.
+Structured technical specifications, seller profile verification, authentic product image carousel (showcasing BMW 3 Series 330i M Sport), and direct callback routing.
 ![Ad Detail Page](docs/screenshots/ad_detail.png)
 
 ---
 
 ### 4. Category-Specific Catalog Archive
-Tailored category views (such as Cars and Two-Wheelers) with deep filtering.
+Tailored category views (such as Luxury Cars featuring verified BMW, Mercedes-Benz, and Audi vehicles) with deep filtering.
 ![Cars Category Archive](docs/screenshots/category_cars.png)
 
 ---
 
-### 5. Multi-Step Listing Submission Studio
+### 5. Seller Lead & Callback Management Dashboard
+Dedicated seller dashboard (`/call-requests/`) tracking buyer inquiries with real-time counters, one-click WhatsApp integration, and "Mark Contacted" status toggling.
+![Buyer Call Requests Dashboard](docs/screenshots/call_requests.png)
+
+---
+
+### 6. Multi-Step Listing Submission Studio
 Seller studio featuring category-specific dynamic fields, document checks, and multi-photo upload validation.
 ![Post Ad Studio](docs/screenshots/post_ad.png)
 
 ---
 
-### 6. Secure Authentication & Member Portal
+### 7. Secure Authentication & Member Portal
 Streamlined login and registration interface protected against open redirects and brute-force vectors.
 ![Authentication Portal](docs/screenshots/login_page.png)
 
@@ -276,4 +282,4 @@ http://127.0.0.1:8000/
 ## License & Author
 
 Developed by **Samir Karavadara** for the **PreLoved** marketplace project.  
-Licensed under the [MIT License](LICENSE).
+Licensed under the MIT License.
